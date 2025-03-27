@@ -22,11 +22,11 @@ Originally conceived as a tool to export and import car presets between save gam
 * For the Python script version:
   * On Windows:
     * If you have Python 3 as your default Python instance, just double click the MemphisRider.py file
-    * Alternatively, open a Powershell/Command Prompt window in the folder you have the MemphisRider.py file and type py MemphisRider.py and press Enter
+    * Alternatively, open a Powershell/Command Prompt window in the folder you have the MemphisRider.py file and type ``py MemphisRider.py`` and press Enter
   * On Linux:
-    * Make the MemphisRider.py file executable by opening a Terminal window in the folder you have the NFS_FCEPaintBooth.py file, then type chmod +x MemphisRider.py and press Enter
+    * Make the MemphisRider.py file executable by opening a Terminal window in the folder you have the NFS_FCEPaintBooth.py file, then type ``chmod +x MemphisRider.py`` and press Enter
     * If you have Python 3 as your default Python instance, just double click the MemphisRider.py file
-    * Alternatively, open a Terminal window in the folder you have the MemphisRider.py file and type python3 MemphisRider.py and press Enter
+    * Alternatively, open a Terminal window in the folder you have the MemphisRider.py file and type ``python3 MemphisRider.py`` and press Enter
 * Remember to back up your profile before opening it with MemphisRider in case something goes wrong.
 
 ## Construction

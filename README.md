@@ -3,7 +3,7 @@ Originally conceived as a tool to export and import car presets between save gam
 
 ## Additional thanks to
 * Tango Desktop Project for the UI icons
-* [TerminatorVasya](github.com/TVasya) for the string hashing code
+* [TerminatorVasya](https://github.com/TVasya) for the string hashing code
 
 ## Features
 * Python-based, so it can be run in platforms besides Windows; Python script and standalone Windows application included.

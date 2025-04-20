@@ -1,0 +1,55 @@
+(all offsets are noted in decimal)
+
+first my cars block
+1196
++8 [1196-1203] (some sort of ID hash? first 4 bytes used at 50639)
++9 [1204] enable (boolean)
++12 [1207] show in My Cars list (00 or 02)
++24 [1220-1223] XNAME hash (4 bytes)
++28 [1224-1972] visual customization data (748 bytes)
+rest is probably performance part/tuning data
+2268 (1072 bytes)
+
+last my cars block
+21564
+22636
+
+20 blocks (21440 bytes)
+
+44415 - career garage slot ID shown in main menu upon saving (4 bytes)
+50639 - my cars slot ID shown in main menu upon saving (4 bytes)
+
+first career garage block
+22636
+similar to my cars
++12 [1207] unlocked in Garage list (00 or 04)
++1069 [23705] - purchased flag (boolean)
+24670 (962 bytes) - purchased parts inventory
+2034 bytes total
+
+last career garage block
+30772
+31844
+32806
+
+5 blocks (10170 bytes)
+
+1st duplicate of career car blocks
+34962
+36038 (1076 bytes)
+
+last duplicate of career car blocks
+39355
+40431
+
+5 blocks (5380 bytes)
+
+53601
+25739
+
+presets:
+_______
+00-02: sponsor car flag (00 00 00 -off, 40 14 43 -on)
+72: performance level (00, 01, 02, 03)
+08: XNAME (string, 32 char max)
+40: preset name (string, 32 char max)

@@ -189,17 +189,13 @@ xnames = {
 
 userXnames = {}
 
-def loadUserXnames():
-    global userXnames
-                            
-    if os.path.isfile("userXnames.txt") == True:
-        with open ("userXnames.txt", 'r') as userXnamesFile:
-            userXnames = json.load(userXnamesFile, parse_int=True)
-            userXnamesFile.close()
-    else:
-        pass
-
-loadUserXnames()
+userDirPaths = {
+            "openProfileDir":"",
+            "importPresetDir":"",
+            "exportPresetDir":"",
+            "importSlotDir":"",
+            "exportSlotDir":"",
+            }
 
 myCarsSlots = []
 for i in range(20):
@@ -237,6 +233,40 @@ filePathStr = tk.StringVar()
 activeList = 0
 
 presetImportFlag = 0
+
+##function to load user XNAMES from a file
+def loadUserXnames():
+    global userXnames
+                            
+    if os.path.isfile("userXnames.txt") == True:
+        with open ("userXnames.txt", 'r') as userXnamesFile:
+            userXnames = json.load(userXnamesFile, parse_int=True)
+            userXnamesFile.close()
+    else:
+        pass
+
+## function to load list of recent folders for profiles, presets and slots from a file
+def loadUserDirPaths():
+    global userDirPaths
+
+    if os.path.isfile("userDirPaths.txt") == True:
+        with open ("userDirPaths.txt", 'r') as userDirPathsFile:
+            userDirPaths = json.load(userDirPathsFile, parse_int=True)
+            userDirPathsFile.close()
+    else:
+        pass
+
+loadUserXnames()
+loadUserDirPaths()
+
+## writes list of recent folders for profiles, presets and slots to a file
+def saveUserDirPaths():
+    global userDirPaths
+    
+    with open ("userDirPaths.txt", 'w') as userDirPathsFile:
+        userDirPathsFile.write(json.dumps(userDirPaths, indent=4))
+        userDirPathsFile.close
+##    pass
 
 ## functions to validate characters inputted in text boxes
 def inputCallback(string, newString):
@@ -386,6 +416,7 @@ def openProfile(*args):
     global dirtyFlag
     global openProfilePath
     global openProfilePathPrev
+    global openProfileDir
     if dirtyFlag == 1:
         confirmChanges = messagebox.askyesnocancel("Confirm changes", "You have unsaved changes, do you want to save?")
         if confirmChanges is None:
@@ -394,7 +425,7 @@ def openProfile(*args):
             saveProfile()
     if openProfilePath != "":
         openProfilePathPrev = openProfilePath
-    openProfilePath = filedialog.askopenfilename(title="Open your NFSU2 save file")
+    openProfilePath = filedialog.askopenfilename(title="Open your NFSU2 save file", initialdir=userDirPaths["openProfileDir"])
     if openProfilePath == "":
         openProfilePath = openProfilePathPrev
         return
@@ -436,6 +467,9 @@ def openProfile(*args):
             else:
                 careerSlots[i][0] = '(empty)'
         profile.close()
+        userDirPaths["openProfileDir"] = os.path.split(openProfilePath)[0]
+        saveUserDirPaths()
+        
     openFileLabel()
     dirtyFlag = 0        
     myCarsListboxPopulate()
@@ -487,6 +521,7 @@ def saveProfileAs(*args):
     global dirtyFlag
     global openProfilePath
     global openProfilePathPrev
+    global openProfileDir
     openProfilePathPrev = openProfilePath
     if openProfilePath:
         with open (openProfilePath, 'rb') as profile:
@@ -522,6 +557,8 @@ def saveProfileAs(*args):
                         firstFoundCareerID = careerSlots[i][2][0:4]
                         profileWrite.write(firstFoundCareerID)
                 profileWrite.close()
+                userDirPaths["openProfileDir"] = os.path.split(openProfilePath)[0]
+                saveUserDirPaths()
             dirtyFlag = 0
             if len(f'File saved to: {saveProfilePath}') < 72:
                 filePathStr.set(f'File saved to: {saveProfilePath}')
@@ -537,8 +574,9 @@ def saveProfileAs(*args):
 def exportSlot(*args):
     global myCarsSlots
     global careerSlots
+    global exportSlotDir
     if openProfilePath:
-        slotSave = filedialog.asksaveasfilename(title="Export car slot", filetypes=[("MemphisRider custom car slot", "*.u2cc")], defaultextension=[".u2cc"])
+        slotSave = filedialog.asksaveasfilename(title="Export car slot", filetypes=[("MemphisRider custom car slot", "*.u2cc")], defaultextension=[".u2cc"], initialdir=userDirPaths["exportSlotDir"])
         if slotSave == "":
             return
         
@@ -565,6 +603,9 @@ def exportSlot(*args):
             longpath3= os.path.split(longpath2[0])
             longpath4= os.path.split(longpath3[0])
             filePathStr.set(f'Slot {selSlot+1} exported to: {longpath1[0]}\\...\\{longpath3[1]}\\{longpath2[1]}')
+
+        userDirPaths["exportSlotDir"] = os.path.split(slotSave)[0]
+        saveUserDirPaths()
         fileLabel.after(5000, openFileLabel)
 
 ## imports car in .u2cc file to selected slot, if it's a career mode slot it will also attempt to import part inventory in .u2ci file;
@@ -573,9 +614,9 @@ def importSlot(*args):
     global dirtyFlag
     global myCarsSlots
     global careerSlots
-
+    global importSlotDir
     if openProfilePath:
-        slotOpen = filedialog.askopenfilename(title="Import slot to My Cars", filetypes=[("MemphisRider custom car slot", "*.u2cc")])
+        slotOpen = filedialog.askopenfilename(title="Import slot to My Cars", filetypes=[("MemphisRider custom car slot", "*.u2cc")], initialdir=userDirPaths["importSlotDir"])
         if slotOpen == "":
             return
         
@@ -613,7 +654,10 @@ def importSlot(*args):
                         importSlots[selSlot][3] = slotOpenInvRead.read()
                         slotOpenInvRead.close()
                 else:
-                    tk.messagebox.showinfo(title="Attention", message="No part inventory file (*.u2ci) found for this slot. \nImported slot will inherit the inventory from the save file slot.")     
+                    tk.messagebox.showinfo(title="Attention", message="No part inventory file (*.u2ci) found for this slot. \nImported slot will inherit the inventory from the save file slot.")
+            userDirPaths["importSlotDir"] = os.path.split(slotOpen)[0]
+            saveUserDirPaths()
+            
         importSlots[selSlot][2] = bytes(importSlots[selSlot][2])    
         myCarsListboxPopulate()
         careerListboxPopulate()
@@ -766,6 +810,7 @@ def moveSlotDown(*args):
 def exportPreset(*args):
     global myCarsSlots
     global careerSlots
+    global exportPresetDir
     if openProfilePath:
         sponsorFlag = tk.IntVar(value=0)
         spPerfFlag = tk.IntVar(value=0)
@@ -783,10 +828,12 @@ def exportPreset(*args):
         def exportOkToggle(*args):
             if not presetName.get():
                 exportOkBtn.state(['disabled'])
+                exportPresetTop.unbind('<Return>')
             else:
                 exportOkBtn.state(['!disabled'])
+                exportPresetTop.bind('<Return>', exportOk)
                 
-        def exportOk():
+        def exportOk(*args):
             with open (presetSave, 'wb') as presetWrite:
                 presetWrite.write(b'\x00'*76)
                 if sponsorFlag.get() != 0:
@@ -813,21 +860,27 @@ def exportPreset(*args):
                 longpath4= os.path.split(longpath3[0])
                 filePathStr.set(f'Slot {selSlot+1} exported to: {longpath1[0]}\\...\\{longpath3[1]}\\{longpath2[1]}')
             fileLabel.after(5000, openFileLabel)
+            userDirPaths["exportPresetDir"] = os.path.split(presetSave)[0]
+            saveUserDirPaths()
 
-        def exportCancel():
+        def exportCancel(*args):
             exportPresetTop.destroy()
             return
                     
+        exportDefaultName = os.path.splitext(os.path.basename(presetSave))[0][:32]
+        presetName.set(exportDefaultName)
         exportPresetTop = tk.Toplevel(padx='5', pady='5')
+        exportPresetTop.focus_force()
+        exportPresetTop.grab_set()
         exportPresetTop.title("Export slot as preset")
         exportPresetTop.resizable(False,False)
         if os.name == "nt":
             exportPresetTop.attributes('-toolwindow',1)
-        exportPresetTop.grab_set()
         exportPresetNameLbl = ttk.Label(exportPresetTop, text="Enter preset name (up to 32 characters)")
         exportPresetNameLbl.grid(row = 0, column = 0, sticky="W")
         exportPresetNameEnt = ttk.Entry(exportPresetTop, width=50, textvariable=presetName)
         exportPresetNameEnt.grid(row = 1, column = 0, columnspan=2, sticky="WE")
+        exportPresetNameEnt.focus_set()
         exportPreIsSponsorChk = ttk.Checkbutton(exportPresetTop, text="Sponsor car", variable=sponsorFlag)
         exportPreIsSponsorChk.grid(row = 2, column = 0, sticky="W")
         exportPreSpPerfLbl = ttk.Label(exportPresetTop, text="Performance level")
@@ -845,12 +898,13 @@ def exportPreset(*args):
         exportCancelBtn = ttk.Button(exportPresetTop, text="Cancel", command=exportPresetTop.destroy)
         exportCancelBtn.grid(row = 4, column = 1, sticky="WE")
 
+        exportPresetTop.bind('<Escape>', exportCancel)
         exportPresetTop.bind('<KeyRelease>', exportOkToggle)
 
         regExportP = exportPresetTop.register(inputCallback)
         exportPresetNameEnt.config(validate='key', validatecommand=(regExportP, '%S', '%P')) 
 
-    presetSave = filedialog.asksaveasfilename(title="Export preset", filetypes=[("NFSU2 Binary Preset", "*.bin *.BIN")], defaultextension=[".bin"])
+    presetSave = filedialog.asksaveasfilename(title="Export preset", filetypes=[("NFSU2 Binary Preset", "*.bin *.BIN")], defaultextension=[".bin"], initialdir=userDirPaths["exportPresetDir"])
     if presetSave == "":
         return
     if not exportSlots[selSlot][0] in xnames.keys() and not exportSlots[selSlot][0] in userXnames.keys():
@@ -865,6 +919,7 @@ def importPreset(*args):
     global myCarsSlots
     global careerSlots
     global presetImportFlag
+    global importPresetDir
     
     if openProfilePath:
         if activeList == 1:
@@ -874,7 +929,7 @@ def importPreset(*args):
             importSlots = careerSlots
             selSlot = selectedCareerSlot
         
-        presetOpen = filedialog.askopenfilename(title="Import preset", filetypes=[("NFSU2 Binary Preset", "*.bin *.BIN")])
+        presetOpen = filedialog.askopenfilename(title="Import preset", filetypes=[("NFSU2 Binary Preset", "*.bin *.BIN")], initialdir=userDirPaths["importPresetDir"])
         if presetOpen == "":
             return
         with open (presetOpen, 'rb') as presetRead:
@@ -895,6 +950,9 @@ def importPreset(*args):
             presetRead.seek(76)
             presetData = presetRead.read(748)
             presetRead.close()
+            userDirPaths["importPresetDir"] = os.path.split(presetOpen)[0]
+            saveUserDirPaths()
+            
         newXname.set(presetXnameHash)
         importSlots[selSlot][0] = presetXname
         importSlots[selSlot][1] = struct.pack('>I',int(presetXnameHash,16))
@@ -997,13 +1055,16 @@ def addXnameDlg():
     def addXnameOkToggle(*args):
         if not newXname.get():
             addXnameOkBtn.state(['disabled'])
+            addXnameTop.unbind('<Return>')
         elif not newXnameHash.get():
             addXnameOkBtn.state(['disabled'])
         else:
-            addXnameOkBtn.state(['!disabled'])   
+            addXnameOkBtn.state(['!disabled'])
+            addXnameTop.bind('<Return>', addXnameOk)
     
-    def addXnameOk():
+    def addXnameOk(*args):
         global presetImportFlag
+        global carSlots
         with open ("userXnames.txt", 'w') as userXnamesFile:
             newXnameHashWrite = f"{int(newXnameHash.get(),16):#0{10}x}"
             userXnames[newXname.get().upper()] = str(newXnameHashWrite).upper().replace("0X","0x")
@@ -1021,7 +1082,7 @@ def addXnameDlg():
             presetImportFlag = 0
         addXnameTop.destroy()
 
-    def addXnameCancel():
+    def addXnameCancel(*args):
         global presetImportFlag
         newXname.set('')
         newXnameHash.set('')
@@ -1035,7 +1096,7 @@ def addXnameDlg():
     if os.name == "nt":
         addXnameTop.attributes('-toolwindow',1)
     addXnameTop.minsize(350,150)
-    addXnameTop
+    addXnameTop.focus_force()
     addXnameTop.grab_set()
     addXnameMsgLbl = ttk.Label(addXnameTop, text="")
     if activeList == 0:
@@ -1050,6 +1111,7 @@ def addXnameDlg():
     addXnameLabel.grid(row=1, column=0, columnspan=3, sticky='NSEW')
     addXnameEntry = ttk.Entry(addXnameTop, textvariable=newXname)
     addXnameEntry.grid(row=2, column=0, columnspan=3, sticky='NSEW', pady='5')
+    addXnameEntry.focus_set()
     addXnameHashLbl = ttk.Label(addXnameTop, text="Hash")
     addXnameHashLbl.grid(row=3, column=0, columnspan=3, sticky='NSEW')
     addXnameHashEnt = ttk.Entry(addXnameTop, textvariable=newXnameHash)
@@ -1070,6 +1132,7 @@ def addXnameDlg():
     addXnameEntry.config(validate='key', validatecommand=(regAddXname, '%S','%P'))
     addXnameHashEnt.config(validate='key', validatecommand=(regAddXnameHex, '%S','%P'))
 
+    addXnameTop.bind('<Escape>', addXnameCancel)
     addXnameTop.bind('<KeyRelease>', addXnameOkToggle)
     addXnameEntry.bind('<KeyRelease>', generateHashString)
         

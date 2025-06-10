@@ -32,6 +32,6 @@ Originally conceived as a tool to export and import car presets between save gam
 ## Construction
 |Programs used|Known bugs|May be incompatible with|
 |--|--|--|
-|IDLE, GIMP (icons)|Imported presets might not appear if imported to locked Career garage slots in profiles that haven't unlocked all car slots in Career garage. To fix it, clear the slot and import again.|Save games with expanded car slots made with Archie's fork of NFSU2 Unlimiter (not tested yet)|
+|IDLE, GIMP (icons)|Imported presets might not appear if imported to locked Career garage slots in profiles that haven't unlocked all car slots in Career garage. To fix it, clear the slot and import again.|No incompatibilites found so far|
 
 

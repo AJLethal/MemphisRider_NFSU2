@@ -52,7 +52,7 @@ def unsavedChanges():
 ## "About" dialog
 def aboutDlg(*args):
     aboutMsg = messagebox.showinfo("About MemphisRider",
-                                   "MemphisRider v1.0 \n"
+                                   "MemphisRider v1.3 \n"
                                    "A tool to manage and export NFSU2 profile garages' data\n"
                                     "(c) 2025 and later AJ_Lethal\n\n"
                                     "Licensed under the MIT License")
@@ -64,7 +64,9 @@ lIconData = b'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAIEUlEQVRYw8WXaWxU1x
 openBtnIconData = b'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAA3WAAAN1gGQb3mcAAAD0ElEQVRIx6WVS2tdVRTHf3vvcx9NbrANgkI7SgLFWsWUDgwU4geooyY4FIuIH8CB4sB+BRUc9AOI0IHFgQOhLQFrrXYifVCtVGNI2t60zc19nHPu2Xuv5eA+cpNg29g/LNicc9b67b0e+xieosV3Tp2x1nwCxqqKMcb03/QW5VLprkp8t9uVa+fOnSt2+huAxcVFNzU1Vcvz3Oz84EH93qcnTpz46PR772OM2WYA589/y4VLF9aajcbpiYn9F8+ePetH/ROAmZmZX40x07VabdcJsvyFSqeTsrKygvc9X1UlxoiqcvLk2xRF8fKVq1e+3Gg0Pp6fn/9uaWkpbAPEGI8uLCyUBs6jdvmnHxER2p02169fH4JVlWOzszjnOHVqwY6NjU1d/eXnD4zENvDDToB1zrG+vo73HhFBVRER0jRlfHycyQOTzM3NgW4ByuUym5ubqCrT0zPu9p3bb67dWzuyCxBCUBGhKIohYGAhBIw15HnOjZs3EInDU8y+cYxut4sxhqSUYI2txBjLu2oQY9QQPDFGfIjD4DEKURRjHGPjNQ4ffmWYOoBypQrGIgrWJoBFjbPzn11Kls68FTFGEwDvPSFE1luBa8uBol8iUUOzdZCqr7D+/Z9b6RkseNhbqRJC5O8HB0r1ytxCtnZv+viHX9+4hn4xBMQYqbeEDhMcPDhJpZwMooEBw2gH665uqwBHjr7uDoseW623Xrt5t34RzOcjKQo0M+HQS/s5/uohXOKIolvD8gQN3ltjsBbz2x/33a2/6sm2GsQYyT1MVkpkRaTd8nR9ZC9KnKVWdYQowRqb7wJkQalWSr2dGIOzlr3JEKIiirfWpEOA915D8GTeMF4t94MbEvfsgLyIOAsSFRUtjKGzo00jWQH7qgnWGpwBfYb4UZS8EHwQKlUHqsQoObA5CmBQA1WDD4qMNIoqiPae9Sa8F9hHQUS39VTuA7kPmahsjE6yhBDIvVBEJXYjaREovOCjEkTQHZ2pW0MxUmRDlhVspkUWoj4arQEhBIpoaKaBNARyH1Ht7V7/o/d3yhpotrvSTouOEWkMAYBmhZC4hFY3UgiEqOxVRVTSLMQ096lamtsAaSFMTlQZqzhqzm6rwTPPgTU8eiyS5SHTaFoDgANY3fB0vbC89hjrHP9HivLgYdNkaZ6Lzx8PAKUQwu93VluzDdmXdJbrbP139yZRJE87jazTWmms3KoDJgFMu93+ZnP1/j++ouWn3zxPnOQYi+x+0X50eXnpq+bgnkqAF4ED/XQ9D0GBbn/INgBv+gFdH/Q8wQcABWLf9F8A0n+tNyUc0gAAAABJRU5ErkJggg=='
 saveBtnIconData = b'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'
 saveAsBtnIconData = b'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdYAAA3WAZBveZwAAAVxSURBVEhLrVVbbBRVGP7OzOzs7GX2fmt32922W6DYCGK8hYQIBiXEF6PFpkZ8FAQbX0RfTCVRTHwSU/WVByUkCFF8EQgkUgGhrZSKtAqLbemWQkvptrvdnd2dGc85u0t8AMWELzkz5+w58/237z9L8A/s/GjX59dzkZdmM3qdrkOs/gyBmGWHrN/x2bOXgraRD3p7Dp+ubv0n7hr4Yl/3o4eGmk9Gm5JKQyhMykSWXYos6ibI7aUS5jOzhcXx/qlCriA3+UbfnxkpHzh48KBe/fy+4F4y8uOj0W+ibWvrp6fS8tjEhHx9fEycvHmTZCmFYrNDdTgl2Rv3LGimKz1j29iYmB1es/yZvwYHBw3OdB9wA8H2DV/5PQ5zaW5Si1pTn1qM3PaoK31kcckM5/JaQ0k3REOUSUnXiWyzkbJBLNNz1g2Gt/j1yKlfcrt3c657ghtIPLHxQ6/dmPLa8u/KpnEsZMi3nMbYpOKQ89mCGMsXpbhosQCmAUEQ4fQEiJRNTalSLnb8/JqzAycGCpztHuA16Hxv19G4WrqUv13cAJPy8C3AYoU6oflC80qT6q9rBCGkOgTYFy4WFuZu5QPlhUkRxt1aCMAZHWR/72e9XAgSewTs2b7yAnnj9a6tzbJspWcqoDz4/lwKP13NcGIG0zTp0GF4VyqzNzRle+eLXp/TxvcYLg5faBgY7M/QKTfAySwa+d2mqPGGhriQTLYiHk+gsTGOhlgcLtXNjlBSA6VSkc85FB80Q0Z9fYyfDYZCdB6F1+v3O51qc3d3d5gd4wZKOSL5fAEYhoEiJWHeHhv4E/t+7MfF1BQ7wj039DKfc1QjOtR3CfuO9mN8+jZ1oASrVYbqpF5ZSjG2zw0IxFhFvSAVL0uc7NTwNfwwOIZ0jsDp9kGyyLw2Ou1ABp2eU71+9F2Zw7d9l3Enq0EURXg8XoQjEZWYQpSdq+TbJOuTzUlB16mkKQszUuezIxIOIRhNwBOshyjQclHDLE0GramWzyJA91y+IBIRN1wOG1WYgFAwhLq6+rBpmO3cQE9Pj0S19LTfHxCYBzVsWdeKZncJ+cwMCktZLC7McQMsTUWtgPxSDmVqbPHWGLrWJRAPqzy1NP+wSJYkIeImxi3Mz8+0K4oNFtlCw/NwLxi8riC6nl2Odr+GOzfTcLp8MKgBDvpW3R5MjA6je3MLVre2QpFtkGUZFtovVIlwud0Oxi0YBMvCoQhTNzKZDBRFgcPhgCRJCPnq0fXcamxud2AqNQKvP0LrValJargfH299DKuSbXC7PPwbTdNQKBQgUyOqQ7UxboF60962YiXK5bIpigKy2Szm5+d5JHa7HbFIIzrWP4ltzyeQ+u08PNTI+OgQ9m5bi8cfWQM3jSSXy/FvGHmhkKdRyGYsGlOpzp6StGKxPRwOo/fLvYQXudrHtcZiYKoqG2W0Wcq4PKRjlfIHDu6/xq+Nyj5/8jlDU6KZJFtapbxWdEmiIG5qaWkhLLzOV1+DleaR3SC0X/mbfVgzxX4pmhJkYT0IXbB1xysd2PPJHiyjdWC9MTjYz+UapBAJ6RRoUWwsLQwBf4A+Cde6QaMxqm8WGRtsLhlUpuXKui5Sh3w+j2AggFisATQtUFUXl3lBK4i06E4uGZp/HqaLbrJuZusHGS6Xi9fK4XDyORtWq5WrrdaQFU1WYVWs9F5pRFNT0wMNRsZqxRRXGzWZ18Bv0xpOnDxOD9F7/3+gbeVy/HphAOmpSb6+mrpC1efgcwbS/c4Oc/ubO3H6zM80tH/993tgRMIROGnavjtyGGTH29sub3ph8wqf18d67aFAK2hIp9PZc+fPXiUdHS9vidSHD9BcPiT6CqjihqZvzLz1N/NFVvSVJ826AAAAAElFTkSuQmCC9fVl90nWikfKHo1Gse3bOfStikajY54T1ZUrV7L97EwjRLm5uQQCgQklys3NHfOcqEbmglE+MPoSca+llMr2x1RgxDKbm5v/p2R3kuM4SCnHVCALoJSivLyctra2uzqGdyPbtpk8efJIfp0FMMZ0X7hwoaKpqSlruVrrMf07tRG7HXmOfz86X09PD1rrM0DIHi7ND3fs2PGSlLLsnvz1cVJKXerv738BCI7cikPAZKAAyAOCwMSOwsTlcvNDKA0kgKvA1dHXcgFEh1uI23w1fU75wy0NJIeB+DdAoXGCgbptnwAAAABJRU5ErkJggg=='
+toolsBtnIconData = b'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'
 addXnameBtnIconData = b'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdYAAA3WAZBveZwAAAQsSURBVEhL7VVpa1xVGH7OXWbNMksmk6VJJsk046QoFgStRVFaF6h+EvwBIuIPkILfRBCl+E0UxQUpCn6QWhCF4oo2UqQtkjSJk2iSmaa9zcyknTWz3HvP9T1nliYiCKkffYaX96zv825nLv5LOA6YA7D2VGLPZL/gxckZMPtuqBgikzYc5SpTXYvMm9q4YwJemkhCYydgO4+Q/1NEYNFyilz/AUz7kn10+v3TWSN7gjb3RXbs4aWvZmJLhzzexAGmJXxAwwFfvAX790uaYn/CTr35evWF51/0Mba/YDT22Y6LndWZdp/KtGcYnCK4eYbbjV8yuULvFxrn3NfX1w9B0Ly5ifOfvops+go8PUHc+/hzGDt8HKq3nwro7BG612KwQj6GABQUqcqXaKEORWmoDX6gP5ePJ9Tjjx175eiDD0mCnz88iYjfQHRYQ7gPuLG+DJv1QA+OYWtrC8ViEalUCpZlwe12Y25uDi4Xh8JKUJUtKE6KipImB3QY+Zj+9TktorXcaGH9t28w9dRhCtst52upRXiMP9Eb30Emk8H29jYajQbq9brcT6fTZHiAnAthapxhIGxCVfvA2QwsJ6JZ/NewIk+2wTQNnLyzLQ7HtsEdTuJIbyORCIaHhxGPx+XY5XJhdnYW4YFJ9PTeT8V4Ag3+NOrWkzDtByiKcWmzS7C2fhFldwCrK1exsZbB6moGWzsOjGIO5YqB0dFRTExMYGRkBKFQiPKsyHk4HMbQ0DRU7SBMK0nGp2Dz/rbVXQTnvnsbaV7DhZUV/HR5Hj9eXsBSoYiL6xcwf+VbNJtNWYNSqYRyudzVlUpF6mq1CtM0ZfFFE3TQJVhY+B7qQBbVaS/y0z7kJ9yohSswbs5jc3MJuq7L1HRkcHBwjwSDQXmm02UddAmOHHkWecNE+o8CjEwF+Rs1FPIN9PpjiEaTMoJCoYBsNis7arcWe8JzITbVbjcBe+PUa87Jl16mMEt0wEZ15xYdsOWm20UtqnupS5SuZx3ppOLvYyGiAYrFAs6c/fx2BNeuXacND8olE35fBPWaAsPI0cFWrg3DkIZEa4o3o6oqllMLlPcm1jdWpYPXjU3ktrOSpIMugVgURRKXhSFRtFKpLMMXD6tWq8kzYr0DzsljoYXn7Z+4K6SDLkEH0WhUFmt8fBzJZFIWNBAIyJbU6J0kEgnpvZBDyXvg9/txMH4XFVm0rkqetg210SUQj0j0tjAiLos8ejweSSbWxGMT2uv1dgl8Ph9cuotS6ofP68NkbAqx2KQk7YC9895b50PB8FEuqy9WWht3CuqmcqVaXmYffPzuo7lsfszhre8B5VsVQvXQmqap01izpLY1uiT/u8h7S9NIdN2kqCwXaYqU1jRbiDhD88ZAKJD7J38pkTJ1QguDQu8eCwgjQsTXa7cWcrvC/+PfAfwFfN8ubfJ/ddoAAAAASUVORK5CYII='
+chgXnameBtnIconData = b'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdYAAA3WAZBveZwAAAX4SURBVEhLjVZdbBxXFf7unb/d9eyud73ejeMkduy0TlpHTQKkiQoEBGojWgUUKQ8RImrgBYmHAgL1sbzwiHjihYg+AIp4AMobeWhUJESLCHFa7NStkwU7m9hxvH+zszOzs3fmXs6s10lbidBPOjp35945373nfPfMMnwC334hfUZBfQ9gxxVjNlNyk0FdBcOvX78SXh0u+9T4GMHF05mflU11/vOTVmnKhm5pinX6kLcdKW7Wxd31kP3h9SvBq8Plnwra0OPl0+lzEyl8/9wT1oSeL+pOpsxaRhEes9iYKfWZjMi2w3hqeq+x8W41en/42v8FH3owhVdOTaYqHauoIV9BoVRGcWwM6XwRrlWAq9v6ZytWhXH+w9do+VuvTaWS17bf/t94uODlF9KtVw6b+UZ2H8uNlVEaKyKKBJotB41mE0GnjRHhy1qj2z42ojZ52M8opaQ0eIfF6pII5e9P/g6bw3AP8YjgdMb9wbxu38/sg10YQy5rI5YSbrdLJG1It4kZ5kLLT8a7njnJuJXjUc+hAHHk3l7a8GrVN4KWc+n4b7E0DDnAwxocndW/dXBULwTQecQ4RBQj6AXoej4QuCiqAGU6WfnEixwjWQbTgmQREPtcHx3PcaX2sCh2vzPj3fnlIpxh2Ec1UMAfbzajXi5ylOg00Ww2UG+20HVaMHsd7LJTGJ1/DkhnAHMUoLowPUOnjKCUx/RyZZTb9imm4elhyAEGBF87e3KqkT50cKVv6mtOyBTtOBc2kQ3bsIQPrR/SUQ2Ylf0QvS4FToNb+YEH1yH8OhGatEl+iLI6PYg8BD91/lRJMO27pb2lr4sx21qgjKy5fWy2PTxwfGzQuO5LhH06JaVOEqEUHlTfhYoCqLhPvgcZx4mNMobsMPYAPCXwjULe+vHcLNdT44z5hRHcVGlcbXO8uRXhWhe4JzXESkImgXotxO5dCGcVkf8Akk4Jmotj0SNNdZVCOIw9AFdgl47NZ2TbWYMXNDA5M4vywb3AhIleUcLcl4W5h+4ClxDuA9p5B6JTg2ivEtE64qAJqdskCOGGQt2KYHxMqoMacF0a9eYdEpxEP+yidreKIPCQphRL2cD7JMc3fY7Gu9dgZHfTzutEUCW/BW5k4ciSqt1j/Grt2Hu/WLl4axB5CG32qemf7K74qDfWQSlGu90giUZI24kS6UEwCnFnHu7qUWyGJvaIZbBdh6Aykwj5GOLMFD68HbDlf2vZ1fXc8aCvH5jffbS1tH5j5SHB5IRCp7uBqLULmtWDbpBoCZFTgqgdRq78PIpf+goW/mNgi/pTfvUdYPlt9KsfoLqyib+t7ceSP8fFoRMkrPQ0azbmDu/5TLR4b+HGgGDfRI7E0GOBo1E+XcikoDGHWn8GlSfOQDw5j7+vepCFcbz05WcRlL+ANxYmsJn6Iuxnz6Ny5CRWZAGrbgReGmMjo9mKur9pL65f/w3vuv7l64seNDauCuMF5Ef2I5eeQTY1Qyex0AhCrDsh+kKA7i18YwT/aFn45qsXcPZHF/BPUUK1l0KgOKI4QsMj86XGlLKSDGmmnfpQ07TJXpx60vEN7ngpOF4GHS8N1S5Cs6fgj+Tpd0i3VqF638Palo/PzZVIHBzXbjWxtEY3vxOQIEiTXEMqEUhzs7a4vnBZr75XraZN/adSystRFBtKKmorikciSh2I9l6k8Qm6TeCxgOE72Ipyg/q8fXODWkSM6r0W2kSu+13argFmmIP5JAa5dNJNE9PJDLKk+SUTibfPHbnwc2P+yNne9AH4Xbri7RZCqkNfSJRy1OyoL7Q9QTVTMF3quFaK1GUjt7WB3Ac33rl8/VdndrqpJEtSLD5i8Vzl6ae4ps8aQZBNdVow6JuQ8j1YNEa9DlIL0vQsQ8EzXYfmukh7DvROYyt2m39dvv+vK4/7IpnPz515zrbsr+q6uV9icORtUKqHo0egfwaJ42AylnHND92//Hn5T289jiAJmKQuUUOS2GS8s/4R2TaS4NuXZzsT1BoHPUk8jiBBMv9R28EnCZIU72CHjAzqv7ko5qAxsJ2BAAAAAElFTkSuQmCC'
 aboutBtnIconData = b'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAGF0lEQVRIx42WXWwcVxXHf/djZvbD3rW99tpefyW14zgfTRORh0KLEKSQIqpWRe0DSDwhhQcewhMSQmrUh1IQb6hS1UrwgiJVCEpRURXRGqiaxkqatM2HY5J6N3GStb2Ovfba3o/ZOzOXh7UTELTKlf6auXc053fOuWfOHcGDjBMn5PD5WFoos0M39Eb+bz/Lg7AP8qr4vAcjT700QSieRfAEMCGg04IRILBIENcsnEZFr3bnuvMXXv+ReSDAl4695iwXV38souiHA33psYfH+t39o71i13C32DnQBcDVwhLT+QV77sod/2phqdo04csIdXLunZ8ufiFg8Fu/GNOKV11P7X/uyIHMk4/tdoIgYrpQ4ubCGsWlClJIxkd6GB/OcHjvAFMX5+zv3vpo9U6pcj7C/vrG4o33ufC6+R/A3udPuLWq987OgcyjP/n+Y3EQ8r1zeS7NLhJEIJUEBAKLALSWZDuSPPO1PQz1tts3Tl2qTV269e5Sef2VW6d+PrltV23fJEaOHvc859kXjh1J54tl+ed/zlBc3gChcF2F4zjsGUiz2bQ4jkIIyWa9yWe3V4gs4quHdjiVzXrv7btrlfaRI7OV/OTaPcDIUy9NCCte/t6TBwcHsmn91j9mKG/4uJ5LzHPxXIffHH+CHzx9mH3DHZyeXkBJiVQKYyIWy5uMDWZEtivpNfygr3h31e8e3Xe+PHsulACEfHco1zF69CvjzuS5PKvVJvG4S8xziHkOibiHVK1glVIk4x6JuEfM0ziuxg8izk4XyXal5KHdA4OD2c7DociNA+jWRohvPjKec30TMl24S8xz8La8dxyF4yh++cZ5hjJJiuU6ibhHFEaYQNGQBhNI5krrVKo+2Uy7MzqUGby9sL4PuKx5/g+KzdmJA2N9YjpfwgqBo3UrNZ7egmiOfXsv2a42CvNl/vjBDYwJkEqy/bUFQcRiuUYuk1CD2XSvkHYcQObKsx0I0TE+0iPmFtdwHN2SVriOxtWamKvp624nl03R29VOPO6RSMTwPOeeA1IJ1qs+nqvpSicyCLsLQHoxOWqxzZ0DXSwsb6J0KyVKSRyt8WIaL+YiRKuipZLEYq3UubrliOMopBBsNAK01qSTsSSWXgAdBFSVQgghEFIghURKiZQCKQVKShxH3wMIIYm5GoElDCNMIFFSorXC1apVXVKEQogmgLz9aH0Gi565scT4UDdgQYBSEqVaMCUlbEewVZ7WCoTYmktJzHPpzbQRRRGVaqMshZgFkLz4YmTh+rUbJTs2lEGJFsNaCMOIMGqJre20NiKKIoRorYRRRBhGJOIu2c4ETWPs8lptIQjspRYAQMjTZ6fvmMN7B0gnPYIgILK2pcgSmABrW4AoijAmoGkMxgREUUTM03Smk4z0pqjXmsH07OIC2s7cB8jwlY+m71SvzC7ao18eI+Yomr6haQKMCWj4zfuAMKJa9/F9gzERSkpS7QkOjWXxfWOvFBaXr99c+cQJkh/fA3TnuvPNhvnVa2+eXds11Gkf2dWHkmBMgO8bGr7BRvcjqNV8Gr5BSUGqPc6OvjSj/SmmPimYqYtzb1dN/eTsqeP+vV60cOGvUWr064XNmv+4taL38UM79GA2Jap1w3qtiZKCDy4VeXsqz8fXl9BaEfdcOjuSHBzt4cDODGc+LZgzn85NForLv4/FGhfuXn0//K9uWsn/fbN99BultfV6z9pmLZvrSXl7dvaIwWyKZKzVl7RWtCU9hrJpHhro4MBDGTSRfXfqmjlzcW6yWNr4bdPUP5x584XNbbv6Pw+c7lJmsticlyvLK3PrG/XvHJwYzPV1p3Quk5Ceq9Fao5QgDCx137eFucXo8vX5tdPnZ96bn1/8S1AtnS2eO7n2RUemC7SnR4883Na/77nhof6Du3b09Q73ZTq7M+lkqj3uCmtZWV2vz5dWKlc/u1W+np/71/Kti3+ql65cNdW1FaAC1IDo/wHagBSQ1rHOTLJ//4ST6t/tJDqGldfWL6SXgtCGfqXsbyzPmfXSzer8hcths75teB1YBTaB4PP+KjTgAXEguQXdvsa3Kq++ZWRbtS01tg1vj38DwkCcCvji0AkAAAAASUVORK5CYII=Y29tL3hhcC8xLjAvIgogICB4bXBNTTpEb2N1bWVudElEPSJnaW1wOmRvY2lkOmdpbXA6OTlkYTRjMGItN2UwNS00MGZkLWFhNjItZThhMzk4YjNlYmM0IgogICB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmY2ZmIzY2FjLWRmODEtNDk0YS1iN2RjLWJmZjBlNDIwOGI2OSIKICAgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOjUwYmM3MTFlLTFlMDItNDg4My05NmU3LWI3NjQ2NTc3YjRkNyIKICAgZGM6Rm9ybWF0PSJpbWFnZS9wbmciCiAgIEdJTVA6QVBJPSIyLjAiCiAgIEdJTVA6UGxhdGZvcm09IldpbmRvd3MiCiAgIEdJTVA6VGltZVN0YW1wPSIxNzQyNTg4MjI3MDQ2ODk0IgogICBHSU1QOlZlcnNpb249IjIuMTAuMzgiCiAgIHRpZmY6T3JpZW50YXRpb249IjEiCiAgIHhtcDpDcmVhdG9yVG9vbD0iR0lNUCAyLjEwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDI1OjAzOjIxVDE0OjE2OjU4LTA2OjAwIgogICB4bXA6TW9kaWZ5RGF0ZT0iMjAyNTowMzoyMVQxNDoxNjo1OC0wNjowMCI+CiAgIDx4bXBNTTpIaXN0b3J5PgogICAgPHJkZjpTZXE+CiAgICAgPHJkZjpsaQogICAgICBzdEV2dDphY3Rpb249InNhdmVkIgogICAgICBzdEV2dDpjaGFuZ2VkPSIvIgogICAgICBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmZmM2FkOGExLTdlODctNGRiYS1hNjQ4LWViOThmMmY2MmRmNyIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iR2ltcCAyLjEwIChXaW5kb3dzKSIKICAgICAgc3RFdnQ6d2hlbj0iMjAyNS0wMy0yMVQxNDoxNzowNyIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgCjw/eHBhY2tldCBlbmQ9InciPz5aOuJXAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6QMVFBEHC2qAiAAACEBJREFUWMPNl3twVNUdxz/ncXc3m2TzDkgC5gEUQtRECKKUIT5QBNuirfSPjuNox3HqjHZ0pnY61U6q1alO/aftOBW1aGu1yGh1FMpTUEYBxSCPyCMJBCSQB5uEPPaVvef0j3t3JZYZqdOZ9s6cvXf37jm/7/l+f68D/+NLXOwfm5tb9PFcZ5FA3C4QiyyUAgX+63MCzgrsDhe7tnpsfMf27S3p/wqAqhUthSIZfATBPdOnlXFdU21+U/1UMbk0n5JIDgADw3F6oiPsaTtlt37SOdLe1QeW520w+Zuut1qGvjGAqqVPPiCVeHzpwlk59/5ggTNzWulFcdbxRZRVb+weX/fB53Fj5aNd63/++/8IQFVzS8iGQ3+bUzvppsfvuzG3rrochLfwh/tOsvfIGaLDMQbOJRACSgtzKCnIpXHmJVxz+VRqKosBONLVz6PPbh470NGzkbH4j7q2tyS+FsCc21sCY2PBj1dcWz/7V/deH8gJOLR/EeWFt/fw6aHTaEehpEQIb2rmDmCsxRrDvNkV3Lm8gdrKYhKpNE88/17qja0HDoXDiflta1tS59tTE81bkVe9680V19UvePL+m4KOVry1/XMee3EbfYNxAgGN42iUUmilkEr6z9J7lhJHK85ER9m0u5P8cJC66jKua6pVvYNjRfuOnr1y6OiWNfDrCwOoXhb62dUNVXc/8+DyHKUkf1izk1c27MdxNFprtFYoKdBKobVi+bxKll9dQ3kkwPG+MaSUCAlSChCCPYdOMxpLMXf2FBY1VuuDnb1TRyPrUoNHt3z0bwAqbn2yJEc5a5575LZIcSTM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'
 slotExportIconData = b'iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAADjklEQVQ4y9WUW2xURRiAv3Ppbm+02miJlF6wNPRGwdZbi7UUKJfGaFtIY2LAJxJtkEQk+uClvmAUWUIIVEMwBjUhhoSAAmnaFSzY1lsUsKlZ0rRU2c3uJghnu7une87ZMz4sbLNYElN88U8mk5n555v/Nj/830S6V4C4vhiUGKSBlPXnfwMW0SJABluAJCVo0zJS3ngq+P3du74HnpjjOz+80XXoSWSBlPnHDPiD3e/9nJ8/v7btuY45eXHi5HERDAZ+ef3lQ4+SbaEm3ULUbdrYiaZpeL3elEv+v3wMjPbyW/AcEWscRZ5HlrqQdUs201DRREFBAZs2dkoHP9pfhwxElRkwgGmaBAIBVHVme3j0PF9eeoeiooU0tyylsGQtoZtTeH1eTg3vYXDiDNvWdFNTtSxpopQ1iZxSIpKEoijJ8fWPxzg28i7rn22kraOVvIdhRD/BhKMXZ1mQLVvbsTLG+fxCD5J0K4IigfwHWFVVVFUlFNXoG3ORe18O7tM/0XPgMy5+d5XKnLWARMj044n20dbeypUbvUz6JhKM7MSszgYGODJwABCk6cXsWLMTwzLYf3Y7zjQHRXWV+KZH0M0wobRrFC96iI9P76GEqiTrrhZPar+SoRSy64XDVCyqZllZLa8072Pk8jjzWEAsGsfQ4/hujlFaUsY1zZOS8LtaXJhbTX1pC+nO9OR5bfnj6N9cR53OwYja2LZNXNygND2HiHkpFbx334cHDcPouhP8SNEKHquoT6mQZGnaCoZuE4/HMTFw3p+JaU/d/mTC4XD0qIZhdG3f9iq2bSOESGa3vel5ZEnGc3WUt45vSAHLQiEWsbBtgRAGzgczsEWErwLdt1W6ZADDMNA0jVAoNHNZSoR/SUklO1q+QJYyaWxYyYudL2EagljUIhaNE4uYiLjMlvYu1jd2oMhZLM/enIhxLBZDlmWEELN+1/qljYSjLj4Z3omzIYsr2hCWMaP77dhRqvKacQ/2sfWpvfg8/gT40yOH/1U/KHE0MTDkpqWplYvBPgxLx6FmUP3ASvrPn6HYsQqfxz9723y7+82CcHhKUWRlATAfify4FZdNy1otAaNp7uW2w7+4ecVq6XLwLDX5qzg36LZjhj445LKevqd+3PCaOpKdkVvR0viM3H/hlB3Wtd+HXFZ1SoLn2HtrwrrmPdl/lLCueYGaOxXmBB5yWTZQbgu7Hyi/tU6RvwGCiW4Z2KCRQQAAAABJRU5ErkJggg=='
 slotImportIconData = b'iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAADcElEQVQ4y9WVf2jUZRzHX8/z/d7pbvNcm5u1o1hlkUEG6jh3Yo3KAom0NjYsIigGa0lliwKjJKRIZW2FUqxkZv5jwTB0C2lbuubW4VaeKepWcz+6xZ1b7W632+573/s+/XHs5JjJWP3TA58/Hp738/o874fn83ng/zbEvwWo8RWgxcAGInPkvwGr6G2ABEuBEEnajETkDKSDP9jz3o+Ae4F5vG9WN6xDKoRj+Bp49573e/Lzl6/esvmpBbk4+k2TCgYDP73xYsNaskz0lC3UmrLSckKhEH6/P92yUgAkLJNjZ77iiaIKNC21FZfLRVlpudj/ycdrkEBUuwYGiMfjBAIBdF2fe59Ksa9lF4Ph7/g99BuvbnoXIZLmAoEADocjdUSROYRMeyJCoGnadeNAWz1jcR+bN25lLO7jQFt92vpsElQSOQes6/qcONLRSH+oFY+7CK//KB53Ef2hVo78cDClmQWLrCvzAzd7m+j2H6LEs4FzwXYMc5pzwXZKPBvoHjlIs7cpDTw7bgju8LXSfKmWh9dv5PzYSQxzGgDDnOb82EkeKH6Q45dq6fC1zh/ce9nLlz07eGT9Y+Tl3EzJiq0ICVIX6HbBQyufxlVwK551RRw6s4PTP59KL+kP6/fuNwyjGmBb9StMTEwAUF5XmCZ8rqyKtsFGhFBIKXj0rko+O7wvTVO8tIq8xbdgs+mf6oZhVL+8bTuWZaGUSln6+rWh1IaKupXEzGkyMu1YxNE0DUsk0nROpxMhBFf/CrKzYXuVDmAYBlNTU/9YVbrIIhaPkpFhxxQWUkqETIItKzkPh8MAdJ3t4Gp8IHnHsVgsKRbiuuGw5RGZCZPtvIlFDg27Q2IuDuOwL+NsX29KZymLxs5dRBKjycpr/OLzG/YBK6H4dfAy7jvv4Up0HKkJJhnl3lWF7G55lrWdz6AJHV+khWhimGx91dy2+fbOt1yRyKSmSa0AWI4gfzQxcP+Q+Palysrn6YufIGZNIZDct3QTXad6rYsX+kApnNlL+HN8QoJaPe9O5nld71+Wm3NHacWTcjDWzWQ8gCZs3J7pJtdeSN/ARU4cb1cJZbac3ms+Pn9wjX43gk67vijX4ymWrgIXzuwljAz+wS8XfNbw8JBQqLquWrNmQT+Ip0b/CMELQAYKCcwAPcA7XbXm97O6vwHpzFBss4CGCwAAAABJRU5ErkJggg=='
@@ -135,7 +137,9 @@ mainNotebook.add(careerTab, text = "Career Garage")
 openBtnIcon = tk.PhotoImage(data=openBtnIconData)
 saveBtnIcon = tk.PhotoImage(data=saveBtnIconData)
 saveAsBtnIcon = tk.PhotoImage(data=saveAsBtnIconData)
+toolsBtnIcon = tk.PhotoImage(data=toolsBtnIconData)
 addXnameBtnIcon = tk.PhotoImage(data=addXnameBtnIconData)
+chgXnameBtnIcon = tk.PhotoImage(data=chgXnameBtnIconData)
 aboutBtnIcon = tk.PhotoImage(data=aboutBtnIconData)
 slotExportIcon = tk.PhotoImage(data=slotExportIconData)
 slotImportIcon = tk.PhotoImage(data=slotImportIconData)
@@ -196,21 +200,6 @@ userDirPaths = {
             "importSlotDir":"",
             "exportSlotDir":"",
             }
-
-myCarsSlots = []
-for i in range(20):
-    myCarsSlots.append(list())
-    myCarsSlots[i].append(0)
-    myCarsSlots[i].append(0)
-    myCarsSlots[i].append(0)
-
-careerSlots = []
-for i in range(20):
-    careerSlots.append(list())
-    careerSlots[i].append(0)
-    careerSlots[i].append(0)
-    careerSlots[i].append(0)
-    careerSlots[i].append(0)
     
 openProfilePath = ''
 openProfilePathPrev = ''
@@ -234,21 +223,48 @@ activeList = 0
 
 presetImportFlag = 0
 
-##function to load user XNAMES from a file
+carSlots = []
+selSlot = 0
+
+myCarsSlots = []
+careerSlots = []
+
+
+## function to clear slot lists upon being called
+def clearCarSlots():
+    global myCarsSlots
+    global careerSlots
+    
+    myCarsSlots.clear()
+    for i in range(20):
+        myCarsSlots.append(list())
+        myCarsSlots[i].append(0)
+        myCarsSlots[i].append(0)
+        myCarsSlots[i].append(0)
+
+    careerSlots.clear()
+    for i in range(20):
+        careerSlots.append(list())
+        careerSlots[i].append(0)
+        careerSlots[i].append(0)
+        careerSlots[i].append(0)
+        careerSlots[i].append(0)
+        
+## function to load user XNAMES from a file
 def loadUserXnames():
     global userXnames
-                            
+
     if os.path.isfile("userXnames.txt") == True:
         with open ("userXnames.txt", 'r') as userXnamesFile:
             userXnames = json.load(userXnamesFile, parse_int=True)
             userXnamesFile.close()
     else:
-        pass
+        userXnames.clear()
 
 ## function to load list of recent folders for profiles, presets and slots from a file
 def loadUserDirPaths():
     global userDirPaths
-
+    
     if os.path.isfile("userDirPaths.txt") == True:
         with open ("userDirPaths.txt", 'r') as userDirPathsFile:
             userDirPaths = json.load(userDirPathsFile, parse_int=True)
@@ -266,7 +282,6 @@ def saveUserDirPaths():
     with open ("userDirPaths.txt", 'w') as userDirPathsFile:
         userDirPathsFile.write(json.dumps(userDirPaths, indent=4))
         userDirPathsFile.close
-##    pass
 
 ## functions to validate characters inputted in text boxes
 def inputCallback(string, newString):
@@ -425,14 +440,17 @@ def openProfile(*args):
             saveProfile()
     if openProfilePath != "":
         openProfilePathPrev = openProfilePath
+        loadUserXnames()
     openProfilePath = filedialog.askopenfilename(title="Open your NFSU2 save file", initialdir=userDirPaths["openProfileDir"])
     if openProfilePath == "":
         openProfilePath = openProfilePathPrev
         return
     with open (openProfilePath, 'rb') as profile:
+        clearCarSlots()
+        if len(profile.read()) != 54966:
+            badFile=messagebox.showerror(title="Error", message="Invalid profile file, please select another file")
+            return
         profile.seek(1196)
-        myCarsSlots.clear
-        loadUserXnames()
         saveProfileBtn.state(['!disabled'])
         saveAsProfileBtn.state(['!disabled'])
         myCarsListbox['state'] = tk.NORMAL
@@ -933,8 +951,15 @@ def importPreset(*args):
         if presetOpen == "":
             return
         with open (presetOpen, 'rb') as presetRead:
+            if 824 < len(presetRead.read()) > 825 :
+                badFile=messagebox.showerror(title="Error", message="Invalid preset file, please select a valid unserialized preset file.")
+                return
             presetRead.seek(8)
-            presetXname = str(presetRead.read(32)).strip("b'\\x00")
+            presetXname=''
+            for c in presetRead.read(32).decode('ascii'):
+                if c.isalnum() or c == "_":
+                    presetXname += c
+                    
             if not presetXname in xnames.keys() and not presetXname in userXnames.keys():
                 newXname.set(presetXname)
                 presetImportFlag = 1
@@ -982,6 +1007,8 @@ def importPreset(*args):
             importSlots[selSlot][2] = bytes(importSlots[selSlot][2])
             
         dirtyFlag = 1
+        newXname.set('')
+        newXnameHash.set('')
         myCarsListboxPopulate()
         careerListboxPopulate()
         loadSlots()
@@ -999,12 +1026,10 @@ def importPreset(*args):
 def addXnameSolo(*args):
     global activeList
     activeListPrev = activeList
-    activeList = 0
+    if openProfilePath == '':
+        activeList = 0        
     addXnameDlg()
     activeList = activeListPrev
-    if openProfilePath:
-        myCarsListboxPopulate()
-        careerListboxPopulate()
 
 ## opens Add XNAME dialog when called, also auto fills XNAME or hash when found
 def addXnameDlg():
@@ -1018,7 +1043,7 @@ def addXnameDlg():
     if presetImportFlag == 0:
         newXname.set('')
         newXnameHash.set('')
-
+        
     if activeList == 1:
         carSlots = myCarsSlots
         selSlot = selectedMyCarsSlot
@@ -1064,7 +1089,7 @@ def addXnameDlg():
     
     def addXnameOk(*args):
         global presetImportFlag
-        global carSlots
+        
         with open ("userXnames.txt", 'w') as userXnamesFile:
             newXnameHashWrite = f"{int(newXnameHash.get(),16):#0{10}x}"
             userXnames[newXname.get().upper()] = str(newXnameHashWrite).upper().replace("0X","0x")
@@ -1098,7 +1123,7 @@ def addXnameDlg():
     addXnameTop.minsize(350,150)
     addXnameTop.focus_force()
     addXnameTop.grab_set()
-    addXnameMsgLbl = ttk.Label(addXnameTop, text="")
+    addXnameMsgLbl = ttk.Label(addXnameTop, text="Please enter the XNAME and hash to add.\n")
     if activeList == 0:
         addXnameMsgLbl = ttk.Label(addXnameTop, text="Please enter the XNAME and hash to add.\n")
     elif newXname.get() != '' and not newXname.get() in xnames.keys() and not newXname.get() in userXnames.keys() and activeList != 0:
@@ -1138,6 +1163,109 @@ def addXnameDlg():
         
     root.wait_window(addXnameTop)
 
+## opens up serialized preset file to change its XNAME
+def changeSerPresetXname(*args):
+    global xnames
+    global userXnames
+    global newXname
+
+    openSerPresetFile = filedialog.askopenfilename(title="Open your serialized preset", filetypes=[("NFSU2 Binary preset", "*.bin *.BIN")])
+    if openSerPresetFile == '':
+            return
+    
+    with open (openSerPresetFile, "rb") as preset:
+        if preset.read(3) != b'gMp':
+            badFile = messagebox.showerror(title="Error", message="Not a serialized Binary preset .bin file")
+            return
+        openSerPreset=preset.read()
+        preset.seek(28)
+        filesizeData=struct.unpack('h',preset.read(2))[0]
+        xnamesKeys = list(xnames.keys())
+        userXnamesKeys = list(userXnames.keys())
+        for i in range(len(xnamesKeys)):
+            if str(openSerPreset).find(f"{xnamesKeys[i]}_BASE") != -1:
+                 xname = f"{xnamesKeys[i]}".encode('ascii')
+            elif len(xnamesKeys)-i >= 0:
+                pass
+            elif len(xnamesKeys)-i <= 0:
+                if str(openSerPreset).find(f"{userXnamesKeys[i]}_BASE") != -1:
+                    xname = f"{userXnamesKeys[i]}".encode('ascii')
+            else:
+                addXnameDlg()
+                xname = newXname.get()
+
+    def chgSerPreXnameOkToggle(*args):
+        if not newXname.get():
+            chgSerPreXnameOkBtn.state(['disabled'])
+            chgSerPreXnameTop.unbind('<Return>')
+        else:
+            chgSerPreXnameOkBtn.state(['!disabled'])
+            chgSerPreXnameTop.bind('<Return>', chgSerPreXnameOk)
+            
+    def chgSerPreXnameOk(*args):
+        with open (openSerPresetFile, "rb") as preset:
+            openSerPreset=preset.read()
+            preset.seek(0)
+            openSerPreset=openSerPreset.replace(xname, newXname.get().encode('ascii'))
+            savePreset = filedialog.asksaveasfilename(title="Save NFSU2 serialized preset as...", filetypes=[("NFSU2 Binary preset", "*.bin*")], defaultextension=[".bin"])
+            
+            if savePreset == "":
+                pass
+            with open (savePreset, 'wb') as presetWrite:
+                presetWrite.write(openSerPreset)
+                if len(xname) < len(newXname.get()):
+                    preset.seek(28)
+                    filesizeDataNew=struct.pack('h',filesizeData+200)
+                    presetWrite.seek(28)
+                    presetWrite.write(filesizeDataNew)
+
+            presetWrite.close()                
+            chgSerPreXnameTop.destroy()
+
+    def chgSerPreXnameCancel(*args):
+        newXname.set('')
+        chgSerPreXnameTop.destroy()
+        return
+
+    chgSerPreXnameTop = tk.Toplevel(padx='5', pady='5')
+    chgSerPreXnameTop.title("Change serialized preset XNAME")
+    chgSerPreXnameTop.resizable(False,False)
+    if os.name == "nt":
+        chgSerPreXnameTop.attributes('-toolwindow',1)
+    chgSerPreXnameTop.minsize(300,100)
+    chgSerPreXnameTop.focus_force()
+    chgSerPreXnameTop.grab_set()
+    chgSerPreXnameCurLabel = ttk.Label(chgSerPreXnameTop, text=f'Current XNAME: {xname.decode("ascii")}')
+    chgSerPreXnameCurLabel.grid(row=0, column=0, columnspan=3, sticky='NSEW')
+    chgSerPreXnameSpacerLbl = ttk.Label(chgSerPreXnameTop, text="")
+    chgSerPreXnameSpacerLbl.grid(row=1, column=0, sticky="NSEW", pady='5')
+    chgSerPreXnameNewLbl = ttk.Label(chgSerPreXnameTop, text="New XNAME:")
+    chgSerPreXnameNewLbl.grid(row=2, column=0, columnspan=3, sticky='NSEW')
+    chgSerPreXnameNewEnt = ttk.Entry(chgSerPreXnameTop, textvariable=newXname)
+    chgSerPreXnameNewEnt.grid(row=3, column=0, columnspan=3, sticky='NSEW')
+    chgSerPreXnameNewEnt.focus_set()
+    chgSerPreXnameOkBtn = ttk.Button(chgSerPreXnameTop, text="OK", command=chgSerPreXnameOk, state='disabled')
+    chgSerPreXnameOkBtn.grid(row=4, column=1, pady='5', sticky='E')
+    chgSerPreXnameCancBtn = ttk.Button(chgSerPreXnameTop, text="Cancel", command=chgSerPreXnameCancel)
+    chgSerPreXnameCancBtn.grid(row=4, column=2, pady='5', sticky='E')
+
+    chgSerPreXnameTop.columnconfigure(0, weight=1)
+
+    regChgXname = chgSerPreXnameTop.register(inputCallback)
+    chgSerPreXnameNewEnt.config(validate='key', validatecommand=(regChgXname, '%S','%P'))
+
+    chgSerPreXnameTop.bind('<Escape>', chgSerPreXnameCancel)
+    chgSerPreXnameTop.bind('<KeyRelease>', chgSerPreXnameOkToggle)
+        
+    root.wait_window(chgSerPreXnameTop)
+
+## hacky keybind to open the Tools menu
+def toolsMenuKbind(event):
+    toolsMenuBtn.menu.post(toolsMenuBtn.winfo_rootx(),
+                           toolsMenuBtn.winfo_rooty() + toolsMenuBtn.winfo_height())
+    
+    
+
 ## defines window widgets
 openProfileBtn = ttk.Button(topFrame, image=openBtnIcon, text='Open', style='TopButton.TButton', command=openProfile)
 openProfileBtn.grid(row = 0, column=0, sticky='W')
@@ -1150,12 +1278,33 @@ saveAsProfileBtn.grid(row = 0, column=2, sticky='W')
 saveAsTip = Hovertip(saveAsProfileBtn, 'Save profile as... (Ctrl+Shift+S)')
 topSpacerLbl = ttk.Label(topFrame, text='')
 topSpacerLbl.grid(row = 0, column = 3, sticky = 'NSEW', padx=100)
-addXnameBtn = ttk.Button(topFrame, text='Add XNAME', compound='right', image=addXnameBtnIcon, command=addXnameSolo)
-addXnameBtn.grid(row = 0, column=4, sticky="E")
-addXnameTip = Hovertip(addXnameBtn, 'Add XNAME (Ctrl+A)')
-aboutBtn = ttk.Button(topFrame, image=aboutBtnIcon, text='About', command=aboutDlg)
-aboutBtn.grid(row = 0, column=5, sticky="E")
-aboutTip = Hovertip(aboutBtn, 'About...')
+toolsMenuBtn = ttk.Menubutton(topFrame, image=toolsBtnIcon, text='Tools...', takefocus=True)
+toolsMenuBtn.grid(row = 0, column=4, sticky="E")
+toolsMenuBtnTip = Hovertip(toolsMenuBtn, 'Tools (Alt+T)')
+toolsMenuBtn.menu = tk.Menu(toolsMenuBtn, tearoff=0)
+toolsMenuBtn["menu"] = toolsMenuBtn.menu
+toolsMenuBtn.menu.add_command(
+    label="Add XNAME...",
+    accelerator="Ctrl-A",
+    image=addXnameBtnIcon,
+    compound=tk.LEFT,
+    command=addXnameSolo
+    )
+toolsMenuBtn.menu.add_command(
+    label="Change XNAME in serialized preset file...",
+    accelerator="Ctrl-Shift-C",
+    image=chgXnameBtnIcon,
+    compound=tk.LEFT,
+    command=changeSerPresetXname
+    )
+toolsMenuBtn.menu.add_separator()
+toolsMenuBtn.menu.add_command(
+    label="About...",
+    accelerator="F1",
+    image=aboutBtnIcon,
+    compound=tk.LEFT,
+    command=aboutDlg
+    )
 
 myCarsListbox = tk.Listbox(myCarsTabLeft, listvariable=myCarsSlotsListVar, exportselection=False, state='disabled')
 myCarsListbox.grid(row=0, column=0, columnspan=2, rowspan=15, sticky="NSEW")
@@ -1236,8 +1385,14 @@ root.bind('<Control-s>', saveProfile)
 root.bind('<Control-S>', saveProfile)
 root.bind('<Control-Shift-s>', saveProfileAs)
 root.bind('<Control-Shift-S>', saveProfileAs)
+root.bind('<Alt-t>', toolsMenuKbind)
+root.bind('<Alt-T>', toolsMenuKbind)
 root.bind('<Control-a>', addXnameSolo)
 root.bind('<Control-A>', addXnameSolo)
+root.bind('<Control-Shift-c>', changeSerPresetXname)
+root.bind('<Control-Shift-C>', changeSerPresetXname)
+root.bind('<F1>', aboutDlg)
+root.bind('<F1>', aboutDlg)
 root.bind('<Control-e>', exportSlot)
 root.bind('<Control-E>', exportSlot)
 root.bind('<Control-i>', importSlot)

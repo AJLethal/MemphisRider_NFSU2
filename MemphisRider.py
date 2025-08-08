@@ -52,7 +52,7 @@ def unsavedChanges():
 ## "About" dialog
 def aboutDlg(*args):
     aboutMsg = messagebox.showinfo("About MemphisRider",
-                                   "MemphisRider v1.3 \n"
+                                   "MemphisRider v1.4 \n"
                                    "A tool to manage and export NFSU2 profile garages' data\n"
                                     "(c) 2025 and later AJ_Lethal\n\n"
                                     "Licensed under the MIT License")
@@ -229,6 +229,7 @@ selSlot = 0
 myCarsSlots = []
 careerSlots = []
 
+importPerfLvCnc = 0
 
 ## function to clear slot lists upon being called
 def clearCarSlots():
@@ -938,6 +939,87 @@ def importPreset(*args):
     global careerSlots
     global presetImportFlag
     global importPresetDir
+
+    importPerfLevel = 0
+    
+    perfLevels = [bytearray(b'\x00'*68),
+                  bytearray(b'\x01\x01\x00\x00\x00\x00\x01\x01\x01\x00\x00\x00\x01\x00\x00\x01\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x01\x01\x01\x00\x00\x00\x00\x01\x00\x00\x01\x01\x01\x00\x00\x01\x00\x00\x01\x00\x00\x01\x00\x00\x01\x00\x00\x00\x00\x00'),
+                  bytearray(b'\x01\x01\x01\x01\x00\x00\x01\x01\x00\x01\x01\x00\x00\x01\x00\x00\x01\x01\x01\x01\x01\x01\x00\x00\x00\x00\x00\x01\x00\x00\x01\x01\x01\x00\x00\x00\x01\x00\x00\x01\x00\x01\x01\x00\x00\x01\x01\x01\x01\x01\x01\x00\x00\x00\x01\x00\x00\x01\x00\x00\x01\x00\x00\x01\x00\x00\x01\x00'),
+                  bytearray(b'\x01\x01\x01\x01\x01\x01\x01\x01\x00\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00\x01\x01\x01\x01\x01\x01\x01\x00\x00\x01\x00\x01\x00\x00\x00\x00\x01\x01\x01\x00\x01\x00\x00\x01\x01\x01\x01\x00\x01\x01\x01\x01\x01\x01\x00\x00\x01\x00\x00\x01\x00\x00\x01\x00\x00\x01\x00\x00\x01')]
+
+    ## dialog to set performance level of imported preset
+    def importPresetPerfLv(*args):
+        spPerfFlag = tk.IntVar(value=0)
+        
+        def importPresetPerfLvOk(*args):
+            global importPerfLvCnc
+            importSlots[selSlot][2] = bytearray(importSlots[selSlot][2])
+            if spPerfFlag.get() == 0:
+                importSlots[selSlot][2][788:856] = perfLevels[0]
+            elif spPerfFlag.get() == 1:
+                importSlots[selSlot][2][788:856] = perfLevels[1]
+            elif spPerfFlag.get() == 2:
+                importSlots[selSlot][2][788:856] = perfLevels[2]
+            elif spPerfFlag.get() == 3:
+                importSlots[selSlot][2][788:856] = perfLevels[3]
+            else:
+                if importPerfLevel == 0:
+                    importSlots[selSlot][2][788:856] = perfLevels[0]
+                elif importPerfLevel == 1:
+                    importSlots[selSlot][2][788:856] = perfLevels[1]
+                elif importPerfLevel == 2:
+                    importSlots[selSlot][2][788:856] = perfLevels[2]
+                else:
+                    importSlots[selSlot][2][788:856] = perfLevels[3]
+            importSlots[selSlot][2] = bytes(importSlots[selSlot][2])
+            importPerfLvCnc = 0
+            importPresetPerfLvTop.destroy()
+
+        def importPresetPerfLvCancel(*args):
+            global importPerfLvCnc
+            importPerfLvCnc = 1
+            importPresetPerfLvTop.destroy()
+            return
+        
+        importPresetPerfLvTop = tk.Toplevel(padx='5', pady='5')
+        importPresetPerfLvTop.focus_force()
+        importPresetPerfLvTop.grab_set()
+        importPresetPerfLvTop.title("Import preset to slot")
+        importPresetPerfLvTop.resizable(False,False)
+        if os.name == "nt":
+            importPresetPerfLvTop.attributes('-toolwindow',1)
+            
+        importPresetPerfLvLbl = ttk.Label(importPresetPerfLvTop, text="Select performance level of imported preset")
+        importPresetPerfLvLbl.grid(row = 0, column = 0, sticky="W")
+        if importPerfLevel == 0:
+            importAutoString = "Stock"
+        elif importPerfLevel == 1:
+            importAutoString = "Level 1"
+        elif importPerfLevel == 2:
+            importAutoString = "Level 2"
+        else:
+            importAutoString = "Level 3"
+        importPresetPerfLvl0Rd = ttk.Radiobutton(importPresetPerfLvTop, text=f"Detect automatically ({importAutoString})", variable=spPerfFlag, value=-1)
+        importPresetPerfLvl0Rd.grid(row = 1, column = 0, sticky="WE")
+        importPresetPerfLvl0Rd.invoke()
+        importPresetPerfLvl0Rd = ttk.Radiobutton(importPresetPerfLvTop, text="Stock", variable=spPerfFlag, value=0)
+        importPresetPerfLvl0Rd.grid(row = 2, column = 0, sticky="WE")
+        importPresetPerfLvl1Rd = ttk.Radiobutton(importPresetPerfLvTop, text="Level 1", variable=spPerfFlag, value=1)
+        importPresetPerfLvl1Rd.grid(row = 3, column = 0, sticky="WE")
+        importPresetPerfLvl2Rd = ttk.Radiobutton(importPresetPerfLvTop, text="Level 2", variable=spPerfFlag, value=2)
+        importPresetPerfLvl2Rd.grid(row = 4, column = 0, sticky="WE")
+        importPresetPerfLvl3Rd = ttk.Radiobutton(importPresetPerfLvTop, text="Level 3", variable=spPerfFlag, value=3)
+        importPresetPerfLvl3Rd.grid(row = 5, column = 0, sticky="WE")
+
+        importPresetPerfLvOkBtn = ttk.Button(importPresetPerfLvTop, text="OK", command=importPresetPerfLvOk)
+        importPresetPerfLvOkBtn.grid(row = 1, column = 1, sticky="WE")
+        importPresetPerfLvCancelBtn = ttk.Button(importPresetPerfLvTop, text="Cancel", command=importPresetPerfLvCancel)
+        importPresetPerfLvCancelBtn.grid(row = 2, column = 1, sticky="WE")
+
+        importPresetPerfLvTop.bind('<Return>', importPresetPerfLvOk)
+        importPresetPerfLvTop.bind('<Escape>', importPresetPerfLvCancel)
+
+        root.wait_window(importPresetPerfLvTop)
     
     if openProfilePath:
         if activeList == 1:
@@ -974,6 +1056,12 @@ def importPreset(*args):
                     presetXnameHash = userXnames[presetXname]
             presetRead.seek(76)
             presetData = presetRead.read(748)
+            presetRead.seek(72)
+            importPerfLevel = struct.unpack('>B',presetRead.read(1))[0]
+            importPresetPerfLv()
+            print(importPerfLvCnc)
+            if importPerfLvCnc == 1:
+                return
             presetRead.close()
             userDirPaths["importPresetDir"] = os.path.split(presetOpen)[0]
             saveUserDirPaths()
@@ -1021,6 +1109,7 @@ def importPreset(*args):
             longpath4= os.path.split(longpath3[0])
             filePathStr.set(f'Imported {longpath1[0]}\\...\\{longpath3[1]}\\{longpath2[1]} to slot {selSlot+1}')
         fileLabel.after(5000, openFileLabel)
+
 
 ## opens Add XNAME dialog on button command
 def addXnameSolo(*args):

@@ -962,6 +962,8 @@ def importPreset(*args):
                 importSlots[selSlot][2][788:856] = perfLevels[2]
             elif spPerfFlag.get() == 3:
                 importSlots[selSlot][2][788:856] = perfLevels[3]
+            elif spPerfFlag.get() == -2:
+                pass
             else:
                 if importPerfLevel == 0:
                     importSlots[selSlot][2][788:856] = perfLevels[0]
@@ -999,17 +1001,19 @@ def importPreset(*args):
             importAutoString = "Level 2"
         else:
             importAutoString = "Level 3"
-        importPresetPerfLvl0Rd = ttk.Radiobutton(importPresetPerfLvTop, text=f"Detect automatically ({importAutoString})", variable=spPerfFlag, value=-1)
-        importPresetPerfLvl0Rd.grid(row = 1, column = 0, sticky="WE")
-        importPresetPerfLvl0Rd.invoke()
+        importPresetPerfLvAutoRd = ttk.Radiobutton(importPresetPerfLvTop, text=f"Detect automatically ({importAutoString})", variable=spPerfFlag, value=-1)
+        importPresetPerfLvAutoRd.grid(row = 1, column = 0, sticky="WE")
+        importPresetPerfLvAutoRd.invoke()
+        importPresetPerfLvSkipRd = ttk.Radiobutton(importPresetPerfLvTop, text="Don't set performance data", variable=spPerfFlag, value=-2)
+        importPresetPerfLvSkipRd.grid(row = 2, column = 0, sticky="WE")
         importPresetPerfLvl0Rd = ttk.Radiobutton(importPresetPerfLvTop, text="Stock", variable=spPerfFlag, value=0)
-        importPresetPerfLvl0Rd.grid(row = 2, column = 0, sticky="WE")
+        importPresetPerfLvl0Rd.grid(row = 3, column = 0, sticky="WE")
         importPresetPerfLvl1Rd = ttk.Radiobutton(importPresetPerfLvTop, text="Level 1", variable=spPerfFlag, value=1)
-        importPresetPerfLvl1Rd.grid(row = 3, column = 0, sticky="WE")
+        importPresetPerfLvl1Rd.grid(row = 4, column = 0, sticky="WE")
         importPresetPerfLvl2Rd = ttk.Radiobutton(importPresetPerfLvTop, text="Level 2", variable=spPerfFlag, value=2)
-        importPresetPerfLvl2Rd.grid(row = 4, column = 0, sticky="WE")
+        importPresetPerfLvl2Rd.grid(row = 5, column = 0, sticky="WE")
         importPresetPerfLvl3Rd = ttk.Radiobutton(importPresetPerfLvTop, text="Level 3", variable=spPerfFlag, value=3)
-        importPresetPerfLvl3Rd.grid(row = 5, column = 0, sticky="WE")
+        importPresetPerfLvl3Rd.grid(row = 6, column = 0, sticky="WE")
 
         importPresetPerfLvOkBtn = ttk.Button(importPresetPerfLvTop, text="OK", command=importPresetPerfLvOk)
         importPresetPerfLvOkBtn.grid(row = 1, column = 1, sticky="WE")
@@ -1059,7 +1063,6 @@ def importPreset(*args):
             presetRead.seek(72)
             importPerfLevel = struct.unpack('>B',presetRead.read(1))[0]
             importPresetPerfLv()
-            print(importPerfLvCnc)
             if importPerfLvCnc == 1:
                 return
             presetRead.close()

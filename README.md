@@ -7,7 +7,7 @@ Originally conceived as a tool to export and import car presets between save gam
 
 ## Features
 * Python-based, so it can be run in platforms besides Windows; Python script and standalone Windows application included.
-* Import, export, clear (delete) customized car slots in save games; can also import/export them to Binary preset data for use in career mode as player car, opponent or quick race sponsor.
+* Import, export, clear (delete) customized car slots in save games; can also import/export them to Binary preset data for use in career mode as player car, opponent or quick race sponsor. Imported/exported slots can be also kept track of.
 * Ability to sort customized car slots.
 * Ability to add XNAMEs to support add-on cars, with automatic string hashing.
 * Ability to change XNAMEs of serialized Binary preset data.

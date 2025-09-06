@@ -53,3 +53,4 @@ _______
 72: performance level (00, 01, 02, 03)
 08: XNAME (string, 32 char max)
 40: preset name (string, 32 char max)
+76-824: visual customization data (748 bytes)

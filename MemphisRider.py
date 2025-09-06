@@ -34,6 +34,7 @@ import os
 import io
 import binascii
 import struct
+import hashlib
 
 ## check for unsaved changes upon being called on opening
 def unsavedChanges():
@@ -52,7 +53,7 @@ def unsavedChanges():
 ## "About" dialog
 def aboutDlg(*args):
     aboutMsg = messagebox.showinfo("About MemphisRider",
-                                   "MemphisRider v1.4 \n"
+                                   "MemphisRider v1.5 \n"
                                    "A tool to manage and export NFSU2 profile garages' data\n"
                                     "(c) 2025 and later AJ_Lethal\n\n"
                                     "Licensed under the MIT License")
@@ -64,6 +65,7 @@ lIconData = b'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAIEUlEQVRYw8WXaWxU1x
 openBtnIconData = b'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAA3WAAAN1gGQb3mcAAAD0ElEQVRIx6WVS2tdVRTHf3vvcx9NbrANgkI7SgLFWsWUDgwU4geooyY4FIuIH8CB4sB+BRUc9AOI0IHFgQOhLQFrrXYifVCtVGNI2t60zc19nHPu2Xuv5eA+cpNg29g/LNicc9b67b0e+xieosV3Tp2x1nwCxqqKMcb03/QW5VLprkp8t9uVa+fOnSt2+huAxcVFNzU1Vcvz3Oz84EH93qcnTpz46PR772OM2WYA589/y4VLF9aajcbpiYn9F8+ePetH/ROAmZmZX40x07VabdcJsvyFSqeTsrKygvc9X1UlxoiqcvLk2xRF8fKVq1e+3Gg0Pp6fn/9uaWkpbAPEGI8uLCyUBs6jdvmnHxER2p02169fH4JVlWOzszjnOHVqwY6NjU1d/eXnD4zENvDDToB1zrG+vo73HhFBVRER0jRlfHycyQOTzM3NgW4ByuUym5ubqCrT0zPu9p3bb67dWzuyCxBCUBGhKIohYGAhBIw15HnOjZs3EInDU8y+cYxut4sxhqSUYI2txBjLu2oQY9QQPDFGfIjD4DEKURRjHGPjNQ4ffmWYOoBypQrGIgrWJoBFjbPzn11Kls68FTFGEwDvPSFE1luBa8uBol8iUUOzdZCqr7D+/Z9b6RkseNhbqRJC5O8HB0r1ytxCtnZv+viHX9+4hn4xBMQYqbeEDhMcPDhJpZwMooEBw2gH665uqwBHjr7uDoseW623Xrt5t34RzOcjKQo0M+HQS/s5/uohXOKIolvD8gQN3ltjsBbz2x/33a2/6sm2GsQYyT1MVkpkRaTd8nR9ZC9KnKVWdYQowRqb7wJkQalWSr2dGIOzlr3JEKIiirfWpEOA915D8GTeMF4t94MbEvfsgLyIOAsSFRUtjKGzo00jWQH7qgnWGpwBfYb4UZS8EHwQKlUHqsQoObA5CmBQA1WDD4qMNIoqiPae9Sa8F9hHQUS39VTuA7kPmahsjE6yhBDIvVBEJXYjaREovOCjEkTQHZ2pW0MxUmRDlhVspkUWoj4arQEhBIpoaKaBNARyH1Ht7V7/o/d3yhpotrvSTouOEWkMAYBmhZC4hFY3UgiEqOxVRVTSLMQ096lamtsAaSFMTlQZqzhqzm6rwTPPgTU8eiyS5SHTaFoDgANY3fB0vbC89hjrHP9HivLgYdNkaZ6Lzx8PAKUQwu93VluzDdmXdJbrbP139yZRJE87jazTWmms3KoDJgFMu93+ZnP1/j++ouWn3zxPnOQYi+x+0X50eXnpq+bgnkqAF4ED/XQ9D0GBbn/INgBv+gFdH/Q8wQcABWLf9F8A0n+tNyUc0gAAAABJRU5ErkJggg=='
 saveBtnIconData = b'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'
 saveAsBtnIconData = b'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'
+reloadBtnIconData = b'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'
 toolsBtnIconData = b'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'
 addXnameBtnIconData = b'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdYAAA3WAZBveZwAAAQsSURBVEhL7VVpa1xVGH7OXWbNMksmk6VJJsk046QoFgStRVFaF6h+EvwBIuIPkILfRBCl+E0UxQUpCn6QWhCF4oo2UqQtkjSJk2iSmaa9zcyknTWz3HvP9T1nliYiCKkffYaX96zv825nLv5LOA6YA7D2VGLPZL/gxckZMPtuqBgikzYc5SpTXYvMm9q4YwJemkhCYydgO4+Q/1NEYNFyilz/AUz7kn10+v3TWSN7gjb3RXbs4aWvZmJLhzzexAGmJXxAwwFfvAX790uaYn/CTr35evWF51/0Mba/YDT22Y6LndWZdp/KtGcYnCK4eYbbjV8yuULvFxrn3NfX1w9B0Ly5ifOfvops+go8PUHc+/hzGDt8HKq3nwro7BG612KwQj6GABQUqcqXaKEORWmoDX6gP5ePJ9Tjjx175eiDD0mCnz88iYjfQHRYQ7gPuLG+DJv1QA+OYWtrC8ViEalUCpZlwe12Y25uDi4Xh8JKUJUtKE6KipImB3QY+Zj+9TktorXcaGH9t28w9dRhCtst52upRXiMP9Eb30Emk8H29jYajQbq9brcT6fTZHiAnAthapxhIGxCVfvA2QwsJ6JZ/NewIk+2wTQNnLyzLQ7HtsEdTuJIbyORCIaHhxGPx+XY5XJhdnYW4YFJ9PTeT8V4Ag3+NOrWkzDtByiKcWmzS7C2fhFldwCrK1exsZbB6moGWzsOjGIO5YqB0dFRTExMYGRkBKFQiPKsyHk4HMbQ0DRU7SBMK0nGp2Dz/rbVXQTnvnsbaV7DhZUV/HR5Hj9eXsBSoYiL6xcwf+VbNJtNWYNSqYRyudzVlUpF6mq1CtM0ZfFFE3TQJVhY+B7qQBbVaS/y0z7kJ9yohSswbs5jc3MJuq7L1HRkcHBwjwSDQXmm02UddAmOHHkWecNE+o8CjEwF+Rs1FPIN9PpjiEaTMoJCoYBsNis7arcWe8JzITbVbjcBe+PUa87Jl16mMEt0wEZ15xYdsOWm20UtqnupS5SuZx3ppOLvYyGiAYrFAs6c/fx2BNeuXacND8olE35fBPWaAsPI0cFWrg3DkIZEa4o3o6oqllMLlPcm1jdWpYPXjU3ktrOSpIMugVgURRKXhSFRtFKpLMMXD6tWq8kzYr0DzsljoYXn7Z+4K6SDLkEH0WhUFmt8fBzJZFIWNBAIyJbU6J0kEgnpvZBDyXvg9/txMH4XFVm0rkqetg210SUQj0j0tjAiLos8ejweSSbWxGMT2uv1dgl8Ph9cuotS6ofP68NkbAqx2KQk7YC9895b50PB8FEuqy9WWht3CuqmcqVaXmYffPzuo7lsfszhre8B5VsVQvXQmqap01izpLY1uiT/u8h7S9NIdN2kqCwXaYqU1jRbiDhD88ZAKJD7J38pkTJ1QguDQu8eCwgjQsTXa7cWcrvC/+PfAfwFfN8ubfJ/ddoAAAAASUVORK5CYII='
 chgXnameBtnIconData = b'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'
@@ -137,6 +139,7 @@ mainNotebook.add(careerTab, text = "Career Garage")
 openBtnIcon = tk.PhotoImage(data=openBtnIconData)
 saveBtnIcon = tk.PhotoImage(data=saveBtnIconData)
 saveAsBtnIcon = tk.PhotoImage(data=saveAsBtnIconData)
+reloadBtnIcon = tk.PhotoImage(data=reloadBtnIconData)
 toolsBtnIcon = tk.PhotoImage(data=toolsBtnIconData)
 addXnameBtnIcon = tk.PhotoImage(data=addXnameBtnIconData)
 chgXnameBtnIcon = tk.PhotoImage(data=chgXnameBtnIconData)
@@ -200,7 +203,7 @@ userDirPaths = {
             "importSlotDir":"",
             "exportSlotDir":"",
             }
-    
+
 openProfilePath = ''
 openProfilePathPrev = ''
 
@@ -230,6 +233,10 @@ myCarsSlots = []
 careerSlots = []
 
 importPerfLvCnc = 0
+
+slotsPresetNames = {}
+
+reloadFlag = False
 
 ## function to clear slot lists upon being called
 def clearCarSlots():
@@ -272,10 +279,7 @@ def loadUserDirPaths():
             userDirPathsFile.close()
     else:
         pass
-
-loadUserXnames()
-loadUserDirPaths()
-
+    
 ## writes list of recent folders for profiles, presets and slots to a file
 def saveUserDirPaths():
     global userDirPaths
@@ -283,6 +287,41 @@ def saveUserDirPaths():
     with open ("userDirPaths.txt", 'w') as userDirPathsFile:
         userDirPathsFile.write(json.dumps(userDirPaths, indent=4))
         userDirPathsFile.close
+
+
+## function to load list of recent folders for profiles, presets and slots from a file
+def loadSlotPresetNames():
+    global slotsPresetNames
+    
+    if os.path.isfile("slotPresetNames.txt") == True:
+        with open ("slotPresetNames.txt", 'r') as slotPresetNamesFile:
+            slotsPresetNames = json.load(slotPresetNamesFile, parse_int=True)
+            slotPresetNamesFile.close()
+    else:
+        pass
+    
+## generates MD5 hash of imported preset/slot customization data and checks against slotPresetNames; if hash does not exist, it will be added alongside the preset/slot file name to it.
+def slotPresetNameHash(presetData, filePath):
+    global slotPresetNames
+    presetDataHash = hashlib.md5(presetData).hexdigest()
+    presetName = os.path.splitext(os.path.split(filePath)[1])[0]
+    
+    slotsPresetNames[presetDataHash] = presetName
+
+    saveSlotPresetNames()
+
+## writes MD5 hash of preset to a file
+def saveSlotPresetNames():
+    global slotsPresetNames
+    
+    with open ("slotPresetNames.txt", 'w') as slotPresetNamesFile:
+        slotPresetNamesFile.write(json.dumps(slotsPresetNames, indent=4))
+        slotPresetNamesFile.close
+
+    loadSlotPresetNames()
+
+loadUserXnames()
+loadUserDirPaths()
 
 ## functions to validate characters inputted in text boxes
 def inputCallback(string, newString):
@@ -351,7 +390,11 @@ def myCarsListboxPopulate():
     for i in range(20):
         if openProfilePath:
             myCarsSlots[i][0] = checkSlotXname(myCarsSlots[i][1])
-        myCarsSlotsList.append(f"{myCarsSlots[i][0]}")
+            slotPresetName = hashlib.md5(myCarsSlots[i][2][28:776]).hexdigest()
+        if slotPresetName in slotsPresetNames.keys():
+            myCarsSlotsList.append(f"{myCarsSlots[i][0]} ({slotsPresetNames[slotPresetName]})")
+        else:
+            myCarsSlotsList.append(f"{myCarsSlots[i][0]}")
     myCarsSlotsListVar.set(myCarsSlotsList)
 
 def careerListboxPopulate():
@@ -359,7 +402,11 @@ def careerListboxPopulate():
     for i in range(5):
         if openProfilePath:
             careerSlots[i][0] = checkSlotXname(careerSlots[i][1])
-        careerSlotsList.append(f"{careerSlots[i][0]}")
+            slotPresetName = hashlib.md5(careerSlots[i][2][28:776]).hexdigest()
+        if slotPresetName in slotsPresetNames.keys():
+            careerSlotsList.append(f"{careerSlots[i][0]} ({slotsPresetNames[slotPresetName]})")
+        else:
+            careerSlotsList.append(f"{careerSlots[i][0]}")
     careerSlotsListVar.set(careerSlotsList)
 
 ## sets loaded slot index, also enables or disables UI elements depending of slot
@@ -433,6 +480,9 @@ def openProfile(*args):
     global openProfilePath
     global openProfilePathPrev
     global openProfileDir
+
+    loadSlotPresetNames()
+
     if dirtyFlag == 1:
         confirmChanges = messagebox.askyesnocancel("Confirm changes", "You have unsaved changes, do you want to save?")
         if confirmChanges is None:
@@ -442,7 +492,8 @@ def openProfile(*args):
     if openProfilePath != "":
         openProfilePathPrev = openProfilePath
         loadUserXnames()
-    openProfilePath = filedialog.askopenfilename(title="Open your NFSU2 save file", initialdir=userDirPaths["openProfileDir"])
+    if reloadFlag == False:
+        openProfilePath = filedialog.askopenfilename(title="Open your NFSU2 save file", initialdir=userDirPaths["openProfileDir"])
     if openProfilePath == "":
         openProfilePath = openProfilePathPrev
         return
@@ -454,6 +505,7 @@ def openProfile(*args):
         profile.seek(1196)
         saveProfileBtn.state(['!disabled'])
         saveAsProfileBtn.state(['!disabled'])
+        reloadProfileBtn.state(['!disabled'])
         myCarsListbox['state'] = tk.NORMAL
         exportMyCarsSlotBtn.state(['!disabled'])
         importMyCarsSlotBtn.state(['!disabled'])
@@ -535,7 +587,7 @@ def saveProfile(*args):
             filePathStr.set(f'File saved to: {longpath1[0]}\\...\\{longpath4[1]}\\{longpath3[1]}\\{longpath2[1]}')
         fileLabel.after(5000, openFileLabel)
 
-## saves profile file as another files
+## saves profile file as another file
 def saveProfileAs(*args):
     global dirtyFlag
     global openProfilePath
@@ -544,14 +596,14 @@ def saveProfileAs(*args):
     openProfilePathPrev = openProfilePath
     if openProfilePath:
         with open (openProfilePath, 'rb') as profile:
-            openProfilePath = profile.read()
+            openProfile = profile.read()
             profile.seek(0)
             saveProfilePath = filedialog.asksaveasfilename(title="Save NFSU2 profile as...", filetypes=[("NFSU2 profile", "*.*")])
             if saveProfilePath == "":
                 openProfilePath = openProfilePathPrev
                 return
             with open (saveProfilePath, 'wb') as profileWrite:
-                profileWrite.write(openProfilePath)
+                profileWrite.write(openProfile)
                 profileWrite.seek(1196)
                 for i in range (20):
                     profileWrite.write(myCarsSlots[i][2])
@@ -575,6 +627,10 @@ def saveProfileAs(*args):
                     else:
                         firstFoundCareerID = careerSlots[i][2][0:4]
                         profileWrite.write(firstFoundCareerID)
+                profileWrite.seek(53797)
+                profileWrite.write(b'\x00\x00\x00\x00\x00\x00\x00')
+                profileWrite.seek(53797)
+                profileWrite.write(os.path.split(saveProfilePath)[1][0:7].encode('ascii'))
                 profileWrite.close()
                 userDirPaths["openProfileDir"] = os.path.split(openProfilePath)[0]
                 saveUserDirPaths()
@@ -589,6 +645,13 @@ def saveProfileAs(*args):
                 filePathStr.set(f'File saved to: {longpath1[0]}\\...\\{longpath4[1]}\\{longpath3[1]}\\{longpath2[1]}')
             fileLabel.after(5000, openFileLabel)
 
+## reloads profile
+def reloadProfile(*args):
+    global reloadFlag
+    reloadFlag = True
+    openProfile()
+    reloadFlag = False
+    
 ## exports selected slot to a .u2cc file, if it's a career mode slot it will also export part inventory data to a .u2ci file
 def exportSlot(*args):
     global myCarsSlots
@@ -609,6 +672,7 @@ def exportSlot(*args):
         with open (slotSave, 'wb') as slotSaveWrite:
             slotSaveWrite.write(exportSlots[selSlot][2])
             slotSaveWrite.close()
+            slotPresetNameHash(exportSlots[selSlot][2][28:776], slotSave)
         if activeList == 2:
             slotSaveInv = slotSave.replace(".u2cc", ".u2ci")
             with open (slotSaveInv, 'wb') as slotSaveInvWrite:
@@ -652,6 +716,7 @@ def importSlot(*args):
             importSlots[selSlot][1] = importSlots[selSlot][2][24:28]
             importSlots[selSlot][0] = checkSlotXname(importSlots[selSlot][1])
             importSlots[selSlot][2] = bytearray(importSlots[selSlot][2])
+            slotPresetNameHash(importSlots[selSlot][2][28:776], slotOpen)
             if activeList == 1:
                 if selSlot < 9:
                     importSlots[selSlot][2][0:4] = f"0{selSlot+1}MC".encode('ascii')
@@ -677,7 +742,7 @@ def importSlot(*args):
             userDirPaths["importSlotDir"] = os.path.split(slotOpen)[0]
             saveUserDirPaths()
             
-        importSlots[selSlot][2] = bytes(importSlots[selSlot][2])    
+        importSlots[selSlot][2] = bytes(importSlots[selSlot][2])
         myCarsListboxPopulate()
         careerListboxPopulate()
         loadSlots()
@@ -867,7 +932,8 @@ def exportPreset(*args):
                 presetWrite.seek(72)
                 presetWrite.write(struct.pack('B', spPerfFlag.get()))
                 presetWrite.seek(76)
-                presetWrite.write(exportSlots[selSlot][2][28:777])
+                presetWrite.write(exportSlots[selSlot][2][28:776])
+                slotPresetNameHash(exportSlots[selSlot][2][28:776], presetName.get().upper())
             presetWrite.close()
             exportPresetTop.destroy()
             if len(f'Slot {selSlot+1} exported to: {presetSave}') < 72:
@@ -1075,6 +1141,7 @@ def importPreset(*args):
         importSlots[selSlot][2] = bytearray(importSlots[selSlot][2])
         importSlots[selSlot][2][29:776] = presetData
         importSlots[selSlot][2][25:29] = importSlots[selSlot][1]
+        slotPresetNameHash(presetData, presetOpen)
         if activeList == 1:
             if selSlot < 9:
                 importSlots[selSlot][2][0:4] = f"0{selSlot+1}MC".encode('ascii')
@@ -1368,6 +1435,9 @@ saveTip = Hovertip(saveProfileBtn, 'Save profile (Ctrl+S)')
 saveAsProfileBtn = ttk.Button(topFrame, image=saveAsBtnIcon, text='Save As...', state='disabled', command=saveProfileAs)
 saveAsProfileBtn.grid(row = 0, column=2, sticky='W')
 saveAsTip = Hovertip(saveAsProfileBtn, 'Save profile as... (Ctrl+Shift+S)')
+reloadProfileBtn = ttk.Button(topFrame, image=reloadBtnIcon, text='Reload Profile', state='disabled', command=reloadProfile)
+reloadProfileBtn.grid(row = 0, column=3, sticky='W')
+reloadTip = Hovertip(reloadProfileBtn, 'Reload profile (Ctrl+R)')
 topSpacerLbl = ttk.Label(topFrame, text='')
 topSpacerLbl.grid(row = 0, column = 3, sticky = 'NSEW', padx=100)
 toolsMenuBtn = ttk.Menubutton(topFrame, image=toolsBtnIcon, text='Tools...', takefocus=True)
@@ -1404,6 +1474,9 @@ myCarsListbox.bind('<<ListboxSelect>>', loadSlots)
 myCarsLbScroll = ttk.Scrollbar(myCarsTabLeft, orient=tk.VERTICAL, command=myCarsListbox.yview)
 myCarsLbScroll.grid(row=0, column=2, sticky="NSEW")
 myCarsListbox.configure(yscrollcommand = myCarsLbScroll.set)
+myCarsLbHScroll = ttk.Scrollbar(myCarsTabLeft, orient=tk.HORIZONTAL, command=myCarsListbox.xview)
+myCarsLbHScroll.grid(row=1, column=0, sticky="NSEW")
+myCarsListbox.configure(xscrollcommand = myCarsLbHScroll.set)
 exportMyCarsSlotBtn = ttk.Button(myCarsTabRight, text="Export slot", image=slotExportIcon, compound='left', command=exportSlot, state='disabled', style='TabButton.TButton')
 exportMyCarsSlotBtn.grid(row=0, column=0, sticky="NSEW")
 exportMyCarsTip = Hovertip(exportMyCarsSlotBtn, 'Export slot (Ctrl+E)')
@@ -1436,6 +1509,9 @@ careerListbox.bind('<<ListboxSelect>>', loadSlots)
 careerLbScroll = ttk.Scrollbar(careerTabLeft, orient=tk.VERTICAL, command=careerListbox.yview)
 careerLbScroll.grid(row=0, column=2, sticky="NSEW")
 careerListbox.configure(yscrollcommand = careerLbScroll.set)
+careerLbHScroll = ttk.Scrollbar(careerTabLeft, orient=tk.HORIZONTAL, command=careerListbox.xview)
+careerLbHScroll.grid(row=1, column=0, sticky="NSEW")
+careerListbox.configure(xscrollcommand = careerLbHScroll.set)
 exportCareerSlotBtn = ttk.Button(careerTabRight, text="Export slot", image=slotExportIcon, compound='left', command=exportSlot, state='disabled', style='TabButton.TButton')
 exportCareerSlotBtn.grid(row=0, column=0, sticky="NSEW")
 exportCareerSlotTip = Hovertip(exportCareerSlotBtn, 'Export slot (Ctrl+E)')
@@ -1477,6 +1553,8 @@ root.bind('<Control-s>', saveProfile)
 root.bind('<Control-S>', saveProfile)
 root.bind('<Control-Shift-s>', saveProfileAs)
 root.bind('<Control-Shift-S>', saveProfileAs)
+root.bind('<Control-r>', reloadProfile)
+root.bind('<Control-R>', reloadProfile)
 root.bind('<Alt-t>', toolsMenuKbind)
 root.bind('<Alt-T>', toolsMenuKbind)
 root.bind('<Control-a>', addXnameSolo)

@@ -689,6 +689,9 @@ def exportSlot(*args):
 
         userDirPaths["exportSlotDir"] = os.path.split(slotSave)[0]
         saveUserDirPaths()
+        myCarsListboxPopulate()
+        careerListboxPopulate()
+        loadSlots()
         fileLabel.after(5000, openFileLabel)
 
 ## imports car in .u2cc file to selected slot, if it's a career mode slot it will also attempt to import part inventory in .u2ci file;
@@ -946,6 +949,9 @@ def exportPreset(*args):
                 filePathStr.set(f'Slot {selSlot+1} exported to: {longpath1[0]}\\...\\{longpath3[1]}\\{longpath2[1]}')
             fileLabel.after(5000, openFileLabel)
             userDirPaths["exportPresetDir"] = os.path.split(presetSave)[0]
+            myCarsListboxPopulate()
+            careerListboxPopulate()
+            loadSlots()
             saveUserDirPaths()
 
         def exportCancel(*args):

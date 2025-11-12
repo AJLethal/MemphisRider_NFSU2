@@ -36,6 +36,9 @@ import binascii
 import struct
 import hashlib
 
+## sets current working directory to script location's
+os.chdir(os.path.realpath(os.path.dirname(__file__)))
+
 ## check for unsaved changes upon being called on opening
 def unsavedChanges():
     if dirtyFlag == 1:
@@ -262,8 +265,8 @@ def clearCarSlots():
 def loadUserXnames():
     global userXnames
 
-    if os.path.isfile("userXnames.txt") == True:
-        with open ("userXnames.txt", 'r') as userXnamesFile:
+    if os.path.isfile("MemphisRider_userXnames.txt") == True:
+        with open ("MemphisRider_userXnames.txt", 'r') as userXnamesFile:
             userXnames = json.load(userXnamesFile, parse_int=True)
             userXnamesFile.close()
     else:
@@ -273,8 +276,8 @@ def loadUserXnames():
 def loadUserDirPaths():
     global userDirPaths
     
-    if os.path.isfile("userDirPaths.txt") == True:
-        with open ("userDirPaths.txt", 'r') as userDirPathsFile:
+    if os.path.isfile("MemphisRider_userDirPaths.txt") == True:
+        with open ("MemphisRider_userDirPaths.txt", 'r') as userDirPathsFile:
             userDirPaths = json.load(userDirPathsFile, parse_int=True)
             userDirPathsFile.close()
     else:
@@ -284,17 +287,17 @@ def loadUserDirPaths():
 def saveUserDirPaths():
     global userDirPaths
     
-    with open ("userDirPaths.txt", 'w') as userDirPathsFile:
+    with open ("MemphisRider_userDirPaths.txt", 'w') as userDirPathsFile:
         userDirPathsFile.write(json.dumps(userDirPaths, indent=4))
         userDirPathsFile.close
 
 
-## function to load list of recent folders for profiles, presets and slots from a file
+## function to load list of preset hashes
 def loadSlotPresetNames():
     global slotsPresetNames
     
-    if os.path.isfile("slotPresetNames.txt") == True:
-        with open ("slotPresetNames.txt", 'r') as slotPresetNamesFile:
+    if os.path.isfile("MemphisRider_slotPresetNames.txt") == True:
+        with open ("MemphisRider_slotPresetNames.txt", 'r') as slotPresetNamesFile:
             slotsPresetNames = json.load(slotPresetNamesFile, parse_int=True)
             slotPresetNamesFile.close()
     else:
@@ -314,7 +317,7 @@ def slotPresetNameHash(presetData, filePath):
 def saveSlotPresetNames():
     global slotsPresetNames
     
-    with open ("slotPresetNames.txt", 'w') as slotPresetNamesFile:
+    with open ("MemphisRider_slotPresetNames.txt", 'w') as slotPresetNamesFile:
         slotPresetNamesFile.write(json.dumps(slotsPresetNames, indent=4))
         slotPresetNamesFile.close
 
@@ -1255,7 +1258,7 @@ def addXnameDlg():
     def addXnameOk(*args):
         global presetImportFlag
         
-        with open ("userXnames.txt", 'w') as userXnamesFile:
+        with open ("MemphisRider_userXnames.txt", 'w') as userXnamesFile:
             newXnameHashWrite = f"{int(newXnameHash.get(),16):#0{10}x}"
             userXnames[newXname.get().upper()] = str(newXnameHashWrite).upper().replace("0X","0x")
             userXnamesFile.write(json.dumps(userXnames, indent=4))

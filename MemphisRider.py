@@ -35,6 +35,7 @@ import io
 import binascii
 import struct
 import hashlib
+import datetime
 
 ## sets current working directory to script location's
 os.chdir(os.path.realpath(os.path.dirname(__file__)))
@@ -56,7 +57,7 @@ def unsavedChanges():
 ## "About" dialog
 def aboutDlg(*args):
     aboutMsg = messagebox.showinfo("About MemphisRider",
-                                   "MemphisRider v1.5 \n"
+                                   "MemphisRider v1.6 \n"
                                    "A tool to manage and export NFSU2 profile garages' data\n"
                                     "(c) 2025 and later AJ_Lethal\n\n"
                                     "Licensed under the MIT License")
@@ -241,6 +242,10 @@ slotsPresetNames = {}
 
 reloadFlag = False
 
+fileLabelAfterIDs = []
+
+dontLoadPresetDetails = False
+
 ## function to clear slot lists upon being called
 def clearCarSlots():
     global myCarsSlots
@@ -265,9 +270,17 @@ def clearCarSlots():
 def loadUserXnames():
     global userXnames
 
-    if os.path.isfile("MemphisRider_userXnames.txt") == True:
-        with open ("MemphisRider_userXnames.txt", 'r') as userXnamesFile:
-            userXnames = json.load(userXnamesFile, parse_int=True)
+    if os.path.isfile("MemphisRider_userXnames.json") == True or os.path.isfile("MemphisRider_userXnames.txt") == True:
+        if os.path.isfile("MemphisRider_userXnames.json"):
+            userXnamesFilename = "MemphisRider_userXnames.json"
+        else:
+            userXnamesFilename = "MemphisRider_userXnames.txt"
+        with open (userXnamesFilename, 'r') as userXnamesFile:
+            try:
+                userXnames = json.load(userXnamesFile, parse_int=True)
+            except json.decoder.JSONDecodeError:
+                jsonErrorMsg = messagebox.showerror("Error", f'{userXnamesFile} is corrupted or misconfigured.')
+                raise Exception(f'{userXnamesFile} is corrupted or misconfigured.')
             userXnamesFile.close()
     else:
         userXnames.clear()
@@ -276,9 +289,17 @@ def loadUserXnames():
 def loadUserDirPaths():
     global userDirPaths
     
-    if os.path.isfile("MemphisRider_userDirPaths.txt") == True:
-        with open ("MemphisRider_userDirPaths.txt", 'r') as userDirPathsFile:
-            userDirPaths = json.load(userDirPathsFile, parse_int=True)
+    if os.path.isfile("MemphisRider_userDirHistory.json") == True or os.path.isfile("MemphisRider_userDirPaths.txt") == True:
+        if os.path.isfile("MemphisRider_userDirHistory.json"):
+            userDirHistoryFilename = "MemphisRider_userDirHistory.json"
+        else:
+            userDirHistoryFilename = "MemphisRider_userDirPaths.txt"
+        with open (userDirHistoryFilename, 'r') as userDirPathsFile:
+            try:
+                userDirPaths = json.load(userDirPathsFile, parse_int=True)
+            except json.decoder.JSONDecodeError:
+                jsonErrorMsg = messagebox.showerror("Error",f'{userDirHistoryFilename} is corrupted or misconfigured.')
+                raise Exception(f'{userDirHistoryFilename} is corrupted or misconfigured.')
             userDirPathsFile.close()
     else:
         pass
@@ -287,7 +308,7 @@ def loadUserDirPaths():
 def saveUserDirPaths():
     global userDirPaths
     
-    with open ("MemphisRider_userDirPaths.txt", 'w') as userDirPathsFile:
+    with open ("MemphisRider_userDirHistory.json", 'w') as userDirPathsFile:
         userDirPathsFile.write(json.dumps(userDirPaths, indent=4))
         userDirPathsFile.close
 
@@ -296,20 +317,38 @@ def saveUserDirPaths():
 def loadSlotPresetNames():
     global slotsPresetNames
     
-    if os.path.isfile("MemphisRider_slotPresetNames.txt") == True:
-        with open ("MemphisRider_slotPresetNames.txt", 'r') as slotPresetNamesFile:
-            slotsPresetNames = json.load(slotPresetNamesFile, parse_int=True)
+    if os.path.isfile("MemphisRider_presetHistory.json") == True or os.path.isfile("MemphisRider_slotPresetNames.txt") == True:
+        if os.path.isfile("MemphisRider_presetHistory.json"):
+            presetHistoryFilename = "MemphisRider_presetHistory.json"
+        else:
+            presetHistoryFilename = "MemphisRider_slotPresetNames.txt"
+        with open (presetHistoryFilename, 'r') as slotPresetNamesFile:
+            try:
+                slotsPresetNames = json.load(slotPresetNamesFile, parse_int=True)
+                for key, value in slotsPresetNames.items():
+                    if isinstance(value, dict):
+                        pass
+                    else:
+                        slotsPresetNames[key]={"presetName":slotsPresetNames[key], "lastPath":'n/a', "lastDate":"n/a"}
+            except json.decoder.JSONDecodeError:
+                jsonErrorMsg = messagebox.showerror("Error",f'{presetHistoryFilename} is corrupted or misconfigured.')
+                raise Exception(f'{presetHistoryFilename} is corrupted or misconfigured.')
             slotPresetNamesFile.close()
     else:
         pass
     
 ## generates MD5 hash of imported preset/slot customization data and checks against slotPresetNames; if hash does not exist, it will be added alongside the preset/slot file name to it.
-def slotPresetNameHash(presetData, filePath):
+def slotPresetNameHash(presetData, presetName = '', filePath = ''):
     global slotPresetNames
     presetDataHash = hashlib.md5(presetData).hexdigest()
-    presetName = os.path.splitext(os.path.split(filePath)[1])[0]
+    if filePath != '' and presetName == '':
+        presetName = os.path.splitext(os.path.split(filePath)[1])[0]
+
+    if filePath !='':
+        fileTime = os.path.getmtime(filePath)
+        fileDate = datetime.datetime.fromtimestamp(fileTime)  
     
-    slotsPresetNames[presetDataHash] = presetName
+    slotsPresetNames[presetDataHash] = {"presetName":presetName, "lastPath":filePath, "lastDate":str(fileDate)}
 
     saveSlotPresetNames()
 
@@ -317,8 +356,9 @@ def slotPresetNameHash(presetData, filePath):
 def saveSlotPresetNames():
     global slotsPresetNames
     
-    with open ("MemphisRider_slotPresetNames.txt", 'w') as slotPresetNamesFile:
-        slotPresetNamesFile.write(json.dumps(slotsPresetNames, indent=4))
+    with open ("MemphisRider_presetHistory.json", 'w') as slotPresetNamesFile:
+        slotsPresetNamesSorted = dict(sorted(slotsPresetNames.items(), key=lambda item: item[1]["presetName"]))
+        slotPresetNamesFile.write(json.dumps(slotsPresetNamesSorted, indent=4))
         slotPresetNamesFile.close
 
     loadSlotPresetNames()
@@ -355,17 +395,63 @@ def inputCallbackHex(string, newString):
         else:
             return True
 
+## gets window width to character width ratio depending on OS
+def getWindowTextRatio():
+    if os.name == 'posix':
+        windowTextRatio = 7.29
+    else:
+        windowTextRatio = 6.25
+        
+    return windowTextRatio
+
+## splits filepath for strings in narrower windows
+def splitPath(sourcePath):
+    path = sourcePath
+    splitPath0 = os.path.splitdrive(path)
+    splitPath1 = os.path.split(splitPath0[1])
+    splitPath2 = os.path.split(splitPath1[0])
+    splitPath3 = os.path.split(splitPath2[0])
+
+    if os.name == 'nt':
+        shortPath0 = os.path.join(splitPath0[0],"\\","...",splitPath3[1],splitPath2[1],splitPath1[1])
+        shortPath1 = os.path.join(splitPath0[0],"\\","...",splitPath2[1],splitPath1[1])
+        shortPath2 = os.path.join(splitPath0[0],"\\","...",splitPath1[1])
+    else:
+        shortPath0 = os.path.join(splitPath0[0],"...",splitPath3[1],splitPath2[1],splitPath1[1])
+        shortPath1 = os.path.join(splitPath0[0],"...",splitPath2[1],splitPath1[1])
+        shortPath2 = os.path.join(splitPath0[0],"...",splitPath1[1])
+
+    return (shortPath0, shortPath1, shortPath2)
+    
 ## sets fileLabel to active file
 def openFileLabel():
     fileLabel['textvariable'] = filePathStr
-    if len(f'File: {openProfilePath}') < 72:
-        filePathStr.set(f'File: {openProfilePath}')
-    else:
-        longpath1= os.path.splitdrive(openProfilePath)
-        longpath2= os.path.split(longpath1[1])
-        longpath3= os.path.split(longpath2[0])
-        longpath4= os.path.split(longpath3[0])
-        filePathStr.set(f'File: {longpath1[0]}\\...\\{longpath4[1]}\\{longpath3[1]}\\{longpath2[1]}')
+    if openProfilePath == '':
+        filePathStr.set('')
+        return
+    initialWindowWidth = root.winfo_width()
+    shortPath = splitPath(openProfilePath)
+    while initialWindowWidth / len(f'File: {os.path.normpath(openProfilePath)}'):
+        if initialWindowWidth / len(f'File: {os.path.normpath(openProfilePath)}') >= getWindowTextRatio():
+            filePathStr.set(f'File: {os.path.normpath(openProfilePath)}')
+            break
+        elif initialWindowWidth / len(f'File: {shortPath[0]}') >= getWindowTextRatio():
+           filePathStr.set(f'File: {shortPath[0]}')
+           break
+        elif initialWindowWidth / len(f'File: {shortPath[1]}') >= getWindowTextRatio():
+            filePathStr.set(f'File: {shortPath[1]}')
+            break
+        else:
+            filePathStr.set(f'File: {shortPath[2]}')
+            break
+        
+## refreshes fileLabel on resize
+def fileLabelResizeCheck(event):
+    widthCurrent = root.winfo_width()
+
+    if getattr(root, "_last_width", None) != widthCurrent:
+        root._last_width = widthCurrent
+        openFileLabel()
 
 ## checks XNAME hashes passed through it against the built-in XNAME list and the user XNAME list, then returns the result
 def checkSlotXname(slot):
@@ -385,7 +471,13 @@ def checkSlotXname(slot):
 ## sets active tab to determine operations on My Cars or Career slots
 def activeTab(*args):
     global activeList
+    global fileLabelAfterIDs
     activeList = mainNotebook.index(mainNotebook.select()) + 1
+    for afterID in fileLabelAfterIDs:
+        fileLabel.after_cancel(afterID)
+    fileLabelAfterIDs.clear()
+    if "saved" in filePathStr.get() or "slot" in filePathStr.get():
+        return
     
 ## populates car lists from profile
 def myCarsListboxPopulate():
@@ -395,7 +487,7 @@ def myCarsListboxPopulate():
             myCarsSlots[i][0] = checkSlotXname(myCarsSlots[i][1])
             slotPresetName = hashlib.md5(myCarsSlots[i][2][28:776]).hexdigest()
         if slotPresetName in slotsPresetNames.keys():
-            myCarsSlotsList.append(f"{myCarsSlots[i][0]} ({slotsPresetNames[slotPresetName]})")
+            myCarsSlotsList.append(f"{myCarsSlots[i][0]} ({slotsPresetNames[slotPresetName]['presetName']})")
         else:
             myCarsSlotsList.append(f"{myCarsSlots[i][0]}")
     myCarsSlotsListVar.set(myCarsSlotsList)
@@ -407,7 +499,7 @@ def careerListboxPopulate():
             careerSlots[i][0] = checkSlotXname(careerSlots[i][1])
             slotPresetName = hashlib.md5(careerSlots[i][2][28:776]).hexdigest()
         if slotPresetName in slotsPresetNames.keys():
-            careerSlotsList.append(f"{careerSlots[i][0]} ({slotsPresetNames[slotPresetName]})")
+            careerSlotsList.append(f"{careerSlots[i][0]} ({slotsPresetNames[slotPresetName]['presetName']})")
         else:
             careerSlotsList.append(f"{careerSlots[i][0]}")
     careerSlotsListVar.set(careerSlotsList)
@@ -416,6 +508,8 @@ def careerListboxPopulate():
 def loadSlots(*args):
     global selectedMyCarsSlot
     global selectedCareerSlot
+    global fileLabelAfterID
+    global dontLoadPresetDetails
     careerSlotCount = 0
     if activeList == 1:
         selectedMyCarsSlotInput = myCarsListbox.curselection()
@@ -443,6 +537,47 @@ def loadSlots(*args):
         if selectedMyCarsSlot != 0 and selectedMyCarsSlot != 19 and myCarsSlots[selectedMyCarsSlot][0] != '(empty)':
             myCarsMoveSlotUpBtn.state(['!disabled'])
             myCarsMoveSlotDownBtn.state(['!disabled'])
+
+        if dontLoadPresetDetails == True:
+            dontLoadPresetDetails = False
+            return
+        if "last modified" in filePathStr.get() or "last path:" in filePathStr.get():
+            for afterID in fileLabelAfterIDs:
+                fileLabel.after_cancel(afterID)
+            fileLabelAfterIDs.clear()
+            openFileLabel()
+        if myCarsSlots[selectedMyCarsSlot][0] == "(empty)":
+            for afterID in fileLabelAfterIDs:
+                fileLabel.after_cancel(afterID)
+            openFileLabel()
+            fileLabelAfterIDs.clear()
+        slotPresetName = hashlib.md5(myCarsSlots[selectedMyCarsSlot][2][28:776]).hexdigest()
+        if slotPresetName in slotsPresetNames.keys():
+            windowTextRatio = getWindowTextRatio()
+            initialWindowWidth = root.winfo_width()
+            shortPath = splitPath(slotsPresetNames[slotPresetName]['lastPath'])
+            while initialWindowWidth / len(f"Preset {slotsPresetNames[slotPresetName]['presetName']} last modified {slotsPresetNames[slotPresetName]['lastDate']}"):
+                if initialWindowWidth / len(f"Preset last path: {os.path.normpath(slotsPresetNames[slotPresetName]['lastPath'])}") >= windowTextRatio:
+                    presetLastPathStr = f"Preset last path: {os.path.normpath(slotsPresetNames[slotPresetName]['lastPath'])}"
+                elif initialWindowWidth / len(f'Preset last path: {shortPath[0]}') >= windowTextRatio:
+                    presetLastPathStr = f'Preset last path: {shortPath[0]}'
+                elif initialWindowWidth / len(f'Preset last path: {shortPath[1]}') >= windowTextRatio:
+                    presetLastPathStr = f'Preset last path: {shortPath[1]}'
+                else:
+                    presetLastPathStr = f'Preset last path: {shortPath[2]}'
+                    
+                if initialWindowWidth / len(f"Preset {slotsPresetNames[slotPresetName]['presetName']} last modified {slotsPresetNames[slotPresetName]['lastDate']}") >= windowTextRatio:
+                    filePathStr.set(f"Preset {slotsPresetNames[slotPresetName]['presetName']} last modified {slotsPresetNames[slotPresetName]['lastDate']}")
+                    fileLabelAfterIDs.append(fileLabel.after(3500, lambda: filePathStr.set(presetLastPathStr)))
+                    fileLabelAfterIDs.append(fileLabel.after(7000, openFileLabel))
+                    break
+                else:
+                    filePathStr.set(f"Preset last modified {slotsPresetNames[slotPresetName]['lastDate']}")
+                    fileLabelAfterIDs.append(fileLabel.after(3500, lambda: filePathStr.set(presetLastPathStr)))
+                    fileLabelAfterIDs.append(fileLabel.after(7000, openFileLabel))
+                    break
+        else:
+            pass
             
     if activeList == 2:
         selectedCareerSlotInput = careerListbox.curselection()
@@ -476,6 +611,42 @@ def loadSlots(*args):
         if selectedCareerSlot != 0 and selectedCareerSlot != 4 and careerSlots[selectedCareerSlot][0] != '(empty)':
             careerMoveSlotUpBtn.state(['!disabled'])
             careerMoveSlotDownBtn.state(['!disabled'])
+
+        if dontLoadPresetDetails == True:
+            dontLoadPresetDetails = False
+            return
+        if "last modified" in filePathStr.get() or "last path:" in filePathStr.get():
+            for afterID in fileLabelAfterIDs:
+                fileLabel.after_cancel(afterID)
+            fileLabelAfterIDs.clear()
+            openFileLabel()
+        slotPresetName = hashlib.md5(careerSlots[selectedCareerSlot][2][28:776]).hexdigest()
+        if slotPresetName in slotsPresetNames.keys():
+            windowTextRatio = getWindowTextRatio()
+            initialWindowWidth = root.winfo_width()
+            shortPath = splitPath(slotsPresetNames[slotPresetName]['lastPath'])
+            while initialWindowWidth / len(f"Preset {slotsPresetNames[slotPresetName]['presetName']} last modified {slotsPresetNames[slotPresetName]['lastDate']}"):
+                if initialWindowWidth / len(f"Preset last path: {os.path.normpath(slotsPresetNames[slotPresetName]['lastPath'])}") >= windowTextRatio:
+                    presetLastPathStr = f"Preset last path: {os.path.normpath(slotsPresetNames[slotPresetName]['lastPath'])}"
+                elif initialWindowWidth / len(f'Preset last path: {shortPath[0]}') >= windowTextRatio:
+                    presetLastPathStr = f'Preset last path: {shortPath[0]}'
+                elif initialWindowWidth / len(f'Preset last path: {shortPath[1]}') >= windowTextRatio:
+                    presetLastPathStr = f'Preset last path: {shortPath[1]}'
+                else:
+                    presetLastPathStr = f'Preset last path: {shortPath[2]}'
+                    
+                if initialWindowWidth / len(f"Preset {slotsPresetNames[slotPresetName]['presetName']} last modified {slotsPresetNames[slotPresetName]['lastDate']}") >= windowTextRatio:
+                    filePathStr.set(f"Preset {slotsPresetNames[slotPresetName]['presetName']} last modified {slotsPresetNames[slotPresetName]['lastDate']}")
+                    fileLabelAfterIDs.append(fileLabel.after(3500, lambda: filePathStr.set(presetLastPathStr)))
+                    fileLabelAfterIDs.append(fileLabel.after(7000, openFileLabel))
+                    break
+                else:
+                    filePathStr.set(f"Preset last modified {slotsPresetNames[slotPresetName]['lastDate']}")
+                    fileLabelAfterIDs.append(fileLabel.after(3500, lambda: filePathStr.set(presetLastPathStr)))
+                    fileLabelAfterIDs.append(fileLabel.after(7000, openFileLabel))
+                    break
+        else:
+            pass
 
 ## opens profile file, then loads slot data and enables UI elements
 def openProfile(*args):
@@ -580,15 +751,31 @@ def saveProfile(*args):
                     break
             profile.close()  
         dirtyFlag = 0
-        if len(f'File saved to: {openProfilePath}') < 72:
-            filePathStr.set(f'File saved to: {openProfilePath}')
-        else:
-            longpath1= os.path.splitdrive(openProfilePath)
-            longpath2= os.path.split(longpath1[1])
-            longpath3= os.path.split(longpath2[0])
-            longpath4= os.path.split(longpath3[0])
-            filePathStr.set(f'File saved to: {longpath1[0]}\\...\\{longpath4[1]}\\{longpath3[1]}\\{longpath2[1]}')
-        fileLabel.after(5000, openFileLabel)
+
+        if "last modified" in filePathStr.get() or "last path:" in filePathStr.get():
+            for afterID in fileLabelAfterIDs:
+                fileLabel.after_cancel(afterID)
+            fileLabelAfterIDs.clear()
+        initialWindowWidth = root.winfo_width()
+        windowTextRatio = getWindowTextRatio()
+        shortPath = splitPath(openProfilePath)
+        while initialWindowWidth / len(f'File saved to: {os.path.normpath(openProfilePath)}'):
+            if initialWindowWidth / len(f'File saved to: {os.path.normpath(openProfilePath)}') >= windowTextRatio:
+                filePathStr.set(f'File saved to: {os.path.normpath(openProfilePath)}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            elif initialWindowWidth / len(f'File saved to: {shortPath[0]}') >= windowTextRatio:
+                filePathStr.set(f'File saved to: {shortPath[0]}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            elif initialWindowWidth / len(f'File saved to: {shortPath[1]}') >= windowTextRatio:
+                filePathStr.set(f'File saved to: {shortPath[1]}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            else:
+                filePathStr.set(f'File saved to: {shortPath[2]}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
 
 ## saves profile file as another file
 def saveProfileAs(*args):
@@ -596,6 +783,7 @@ def saveProfileAs(*args):
     global openProfilePath
     global openProfilePathPrev
     global openProfileDir
+    global fileLabelAfterID
     openProfilePathPrev = openProfilePath
     if openProfilePath:
         with open (openProfilePath, 'rb') as profile:
@@ -638,15 +826,31 @@ def saveProfileAs(*args):
                 userDirPaths["openProfileDir"] = os.path.split(openProfilePath)[0]
                 saveUserDirPaths()
             dirtyFlag = 0
-            if len(f'File saved to: {saveProfilePath}') < 72:
-                filePathStr.set(f'File saved to: {saveProfilePath}')
-            else:
-                longpath1= os.path.splitdrive(saveProfilePath)
-                longpath2= os.path.split(longpath1[1])
-                longpath3= os.path.split(longpath2[0])
-                longpath4= os.path.split(longpath3[0])
-                filePathStr.set(f'File saved to: {longpath1[0]}\\...\\{longpath4[1]}\\{longpath3[1]}\\{longpath2[1]}')
-            fileLabel.after(5000, openFileLabel)
+            
+            if "last modified" in filePathStr.get() or "last path:" in filePathStr.get():
+                for afterID in fileLabelAfterIDs:
+                    fileLabel.after_cancel(afterID)
+                fileLabelAfterIDs.clear()            
+            initialWindowWidth = root.winfo_width()
+            windowTextRatio = getWindowTextRatio()
+            shortPath = splitPath(saveProfilePath)
+            while initialWindowWidth / len(f'File saved to: {os.path.normpath(saveProfilePath)}'):
+                if initialWindowWidth / len(f'File saved to: {os.path.normpath(saveProfilePath)}') >= windowTextRatio:
+                    filePathStr.set(f'File saved to: {os.path.normpath(saveProfilePath)}')
+                    fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                    break
+                elif initialWindowWidth / len(f'File saved to: {shortPath[0]}') >= windowTextRatio:
+                    filePathStr.set(f'File saved to: {shortPath[0]}')
+                    fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                    break
+                elif initialWindowWidth / len(f'File saved to: {shortPath[1]}') >= windowTextRatio:
+                    filePathStr.set(f'File saved to: {shortPath[1]}')
+                    fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                    break
+                else:
+                    filePathStr.set(f'File saved to: {shortPath[2]}')
+                    fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                    break
 
 ## reloads profile
 def reloadProfile(*args):
@@ -660,6 +864,7 @@ def exportSlot(*args):
     global myCarsSlots
     global careerSlots
     global exportSlotDir
+    global fileLabelAfterID
     if openProfilePath:
         slotSave = filedialog.asksaveasfilename(title="Export car slot", filetypes=[("MemphisRider custom car slot", "*.u2cc")], defaultextension=[".u2cc"], initialdir=userDirPaths["exportSlotDir"])
         if slotSave == "":
@@ -675,27 +880,43 @@ def exportSlot(*args):
         with open (slotSave, 'wb') as slotSaveWrite:
             slotSaveWrite.write(exportSlots[selSlot][2])
             slotSaveWrite.close()
-            slotPresetNameHash(exportSlots[selSlot][2][28:776], slotSave)
+            slotPresetNameHash(exportSlots[selSlot][2][28:776], '', slotSave)
         if activeList == 2:
             slotSaveInv = slotSave.replace(".u2cc", ".u2ci")
             with open (slotSaveInv, 'wb') as slotSaveInvWrite:
                 slotSaveInvWrite.write(exportSlots[selSlot][3])
             slotSaveInvWrite.close()
-        if len(f'Slot {selSlot+1} exported to: {slotSave}') < 64:
-            filePathStr.set(f'Slot {selSlot+1} exported to: {slotSave}')
-        else:
-            longpath1= os.path.splitdrive(slotSave)
-            longpath2= os.path.split(longpath1[1])
-            longpath3= os.path.split(longpath2[0])
-            longpath4= os.path.split(longpath3[0])
-            filePathStr.set(f'Slot {selSlot+1} exported to: {longpath1[0]}\\...\\{longpath3[1]}\\{longpath2[1]}')
 
         userDirPaths["exportSlotDir"] = os.path.split(slotSave)[0]
         saveUserDirPaths()
         myCarsListboxPopulate()
         careerListboxPopulate()
         loadSlots()
-        fileLabel.after(5000, openFileLabel)
+
+        if "last modified" in filePathStr.get() or "last path:" in filePathStr.get():
+                for afterID in fileLabelAfterIDs:
+                    fileLabel.after_cancel(afterID)
+                fileLabelAfterIDs.clear()            
+        initialWindowWidth = root.winfo_width()
+        windowTextRatio = getWindowTextRatio()
+        shortPath = splitPath(slotSave)
+        while initialWindowWidth / len(f'Slot {selSlot+1} exported to: {os.path.normpath(slotSave)}'):
+            if initialWindowWidth / len(f'Slot {selSlot+1} exported to: {os.path.normpath(slotSave)}') >= windowTextRatio:
+                filePathStr.set(f'Slot {selSlot+1} exported to: {os.path.normpath(slotSave)}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            elif initialWindowWidth / len(f'Slot {selSlot+1} exported to: {shortPath[0]}') >= windowTextRatio:
+                filePathStr.set(f'Slot {selSlot+1} exported to: {shortPath[0]}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            elif initialWindowWidth / len(f'Slot {selSlot+1} exported to: {shortPath[1]}') >= windowTextRatio:
+                filePathStr.set(f'Slot {selSlot+1} exported to: {shortPath[1]}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            else:
+                filePathStr.set(f'Slot {selSlot+1} exported to: {shortPath[2]}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
 
 ## imports car in .u2cc file to selected slot, if it's a career mode slot it will also attempt to import part inventory in .u2ci file;
 ## if not found it will notify user it will use the part inventory from the slot
@@ -704,6 +925,7 @@ def importSlot(*args):
     global myCarsSlots
     global careerSlots
     global importSlotDir
+    global fileLabelAfterID
     if openProfilePath:
         slotOpen = filedialog.askopenfilename(title="Import slot to My Cars", filetypes=[("MemphisRider custom car slot", "*.u2cc")], initialdir=userDirPaths["importSlotDir"])
         if slotOpen == "":
@@ -722,7 +944,7 @@ def importSlot(*args):
             importSlots[selSlot][1] = importSlots[selSlot][2][24:28]
             importSlots[selSlot][0] = checkSlotXname(importSlots[selSlot][1])
             importSlots[selSlot][2] = bytearray(importSlots[selSlot][2])
-            slotPresetNameHash(importSlots[selSlot][2][28:776], slotOpen)
+            slotPresetNameHash(importSlots[selSlot][2][28:776], '',slotOpen)
             if activeList == 1:
                 if selSlot < 9:
                     importSlots[selSlot][2][0:4] = f"0{selSlot+1}MC".encode('ascii')
@@ -752,17 +974,32 @@ def importSlot(*args):
         myCarsListboxPopulate()
         careerListboxPopulate()
         loadSlots()
-        
-        if len(f'Imported {slotOpen} to slot {selSlot+1}') < 72:
-            filePathStr.set(f'Imported {slotOpen} to slot {selSlot+1}')
-        else:
-            longpath1= os.path.splitdrive(slotOpen)
-            longpath2= os.path.split(longpath1[1])
-            longpath3= os.path.split(longpath2[0])
-            longpath4= os.path.split(longpath3[0])
-            filePathStr.set(f'Imported {longpath1[0]}\\...\\{longpath3[1]}\\{longpath2[1]} to slot {selSlot+1}')
-        fileLabel.after(5000, openFileLabel)
         dirtyFlag = 1
+
+        if "last modified" in filePathStr.get() or "last path:" in filePathStr.get():
+            for afterID in fileLabelAfterIDs:
+                fileLabel.after_cancel(afterID)
+            fileLabelAfterIDs.clear()            
+        initialWindowWidth = root.winfo_width()
+        windowTextRatio = getWindowTextRatio()
+        shortPath = splitPath(slotOpen)
+        while initialWindowWidth / len(f'Imported {os.path.normpath(slotOpen)} to slot {selSlot+1}'):
+            if initialWindowWidth / len(f'Imported {os.path.normpath(slotOpen)} to slot {selSlot+1}') >= windowTextRatio:
+                filePathStr.set(f'Imported {os.path.normpath(slotOpen)} to slot {selSlot+1}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            elif initialWindowWidth / len(f'Imported {shortPath[0]} to slot {selSlot+1}') >= windowTextRatio:
+                filePathStr.set(f'Imported {shortPath[0]} to slot {selSlot+1}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            elif initialWindowWidth / len(f'Imported {shortPath[1]} to slot {selSlot+1}') >= windowTextRatio:
+                filePathStr.set(f'Imported {shortPath[1]} to slot {selSlot+1}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            else:
+                filePathStr.set(f'Imported {shortPath[2]}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
 
 ## clears slot data, setting up default data to make slot usable again
 def clearSlot(*args):
@@ -795,6 +1032,10 @@ def moveSlotUp(*args):
     global myCarsSlots
     global careerSlots
     global dirtyFlag
+    global dontLoadPresetDetails
+
+    dontLoadPresetDetails = True
+    
     if openProfilePath:
         if activeList == 1:
             carSlots = myCarsSlots
@@ -846,6 +1087,10 @@ def moveSlotDown(*args):
     global myCarsSlots
     global careerSlots
     global dirtyFlag
+    global dontLoadPresetDetails
+
+    dontLoadPresetDetails = True
+    
     if openProfilePath:
         if activeList == 1:
             carSlots = myCarsSlots
@@ -901,6 +1146,7 @@ def exportPreset(*args):
     global myCarsSlots
     global careerSlots
     global exportPresetDir
+    global fileLabelAfterID
     if openProfilePath:
         sponsorFlag = tk.IntVar(value=0)
         spPerfFlag = tk.IntVar(value=0)
@@ -939,23 +1185,40 @@ def exportPreset(*args):
                 presetWrite.write(struct.pack('B', spPerfFlag.get()))
                 presetWrite.seek(76)
                 presetWrite.write(exportSlots[selSlot][2][28:776])
-                slotPresetNameHash(exportSlots[selSlot][2][28:776], presetName.get().upper())
+                slotPresetNameHash(exportSlots[selSlot][2][28:776], presetName.get().upper(), presetSave)
             presetWrite.close()
             exportPresetTop.destroy()
-            if len(f'Slot {selSlot+1} exported to: {presetSave}') < 72:
-                filePathStr.set(f'Slot {selSlot+1} exported to: {presetSave}')
-            else:
-                longpath1= os.path.splitdrive(presetSave)
-                longpath2= os.path.split(longpath1[1])
-                longpath3= os.path.split(longpath2[0])
-                longpath4= os.path.split(longpath3[0])
-                filePathStr.set(f'Slot {selSlot+1} exported to: {longpath1[0]}\\...\\{longpath3[1]}\\{longpath2[1]}')
-            fileLabel.after(5000, openFileLabel)
+            
             userDirPaths["exportPresetDir"] = os.path.split(presetSave)[0]
             myCarsListboxPopulate()
             careerListboxPopulate()
             loadSlots()
             saveUserDirPaths()
+            
+            if "last modified" in filePathStr.get() or "last path:" in filePathStr.get():
+                for afterID in fileLabelAfterIDs:
+                    fileLabel.after_cancel(afterID)
+                fileLabelAfterIDs.clear()            
+            initialWindowWidth = root.winfo_width()
+            windowTextRatio = getWindowTextRatio()
+            shortPath = splitPath(presetSave)
+            while initialWindowWidth / len(f'Slot {selSlot+1} exported to: {os.path.normpath(presetSave)}'):
+                if initialWindowWidth / len(f'Slot {selSlot+1} exported to: {os.path.normpath(presetSave)}') >= 7.29:
+                    filePathStr.set(f'Slot {selSlot+1} exported to: {os.path.normpath(presetSave)}')
+                    fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                    break
+                elif initialWindowWidth / len(f'Slot {selSlot+1} exported to: {shortPath[0]}') >= windowTextRatio:
+                    filePathStr.set(f'Slot {selSlot+1} exported to: {shortPath[0]}')
+                    fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                    break
+                elif initialWindowWidth / len(f'Slot {selSlot+1} exported to: {shortPath[1]}') >= windowTextRatio:
+                    filePathStr.set(f'Slot {selSlot+1} exported to: {shortPath[1]}')
+                    fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                    break
+                else:
+                    filePathStr.set(f'Slot {selSlot+1} exported to: {shortPath[2]}')
+                    fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                    break
 
         def exportCancel(*args):
             exportPresetTop.destroy()
@@ -1014,6 +1277,7 @@ def importPreset(*args):
     global careerSlots
     global presetImportFlag
     global importPresetDir
+    global fileLabelAfterIDs
 
     importPerfLevel = 0
     
@@ -1133,6 +1397,13 @@ def importPreset(*args):
                     presetXnameHash = xnames[presetXname]
                 if presetXname in userXnames.keys():
                     presetXnameHash = userXnames[presetXname]
+
+            presetRead.seek(40)
+            presetName = ''
+            for c in presetRead.read(32).decode('ascii'):
+                if c.isalnum() or c == "_":
+                    presetName += c
+                    
             presetRead.seek(76)
             presetData = presetRead.read(748)
             presetRead.seek(72)
@@ -1150,7 +1421,7 @@ def importPreset(*args):
         importSlots[selSlot][2] = bytearray(importSlots[selSlot][2])
         importSlots[selSlot][2][29:776] = presetData
         importSlots[selSlot][2][25:29] = importSlots[selSlot][1]
-        slotPresetNameHash(presetData, presetOpen)
+        slotPresetNameHash(presetData, presetName, presetOpen)
         if activeList == 1:
             if selSlot < 9:
                 importSlots[selSlot][2][0:4] = f"0{selSlot+1}MC".encode('ascii')
@@ -1172,23 +1443,39 @@ def importPreset(*args):
             importSlots[selSlot][2][12:13] = struct.pack('>B',4)
             importSlots[selSlot][2][1069:1070] = struct.pack('>B',1)
             importSlots[selSlot][2] = bytes(importSlots[selSlot][2])
-            
+
         dirtyFlag = 1
         newXname.set('')
-        newXnameHash.set('')
+        newXnameHash.set('')          
         myCarsListboxPopulate()
-        careerListboxPopulate()
+        careerListboxPopulate()            
         loadSlots()
-        if len(f'Imported {presetOpen} to slot {selSlot+1}') < 72:
-            filePathStr.set(f'Imported {presetOpen} to slot {selSlot+1}')
-        else:
-            longpath1= os.path.splitdrive(presetOpen)
-            longpath2= os.path.split(longpath1[1])
-            longpath3= os.path.split(longpath2[0])
-            longpath4= os.path.split(longpath3[0])
-            filePathStr.set(f'Imported {longpath1[0]}\\...\\{longpath3[1]}\\{longpath2[1]} to slot {selSlot+1}')
-        fileLabel.after(5000, openFileLabel)
-
+        
+        if "last modified" in filePathStr.get() or "last path:" in filePathStr.get():
+            for afterID in fileLabelAfterIDs:
+                fileLabel.after_cancel(afterID)
+            fileLabelAfterIDs.clear()
+            
+        initialWindowWidth = root.winfo_width()
+        windowTextRatio = getWindowTextRatio()
+        shortPath = splitPath(presetOpen)
+        while initialWindowWidth / len(f'Imported {os.path.normpath(presetOpen)} to slot {selSlot+1}'):
+            if initialWindowWidth / len(f'Imported {os.path.normpath(presetOpen)} to slot {selSlot+1}') >= windowTextRatio:
+                filePathStr.set(f'Imported {os.path.normpath(presetOpen)} to slot {selSlot+1}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            elif initialWindowWidth / len(f'Imported {shortPath[0]} to slot {selSlot+1}') >= windowTextRatio:
+                filePathStr.set(f'Imported {shortPath[0]} to slot {selSlot+1}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            elif initialWindowWidth / len(f'Imported {shortPath[1]} to slot {selSlot+1}') >= windowTextRatio:
+                filePathStr.set(f'Imported {shortPath[1]} to slot {selSlot+1}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
+            else:
+                filePathStr.set(f'Imported {shortPath[2]} to slot {selSlot+1}')
+                fileLabelAfterID = fileLabel.after(5000, openFileLabel)
+                break
 
 ## opens Add XNAME dialog on button command
 def addXnameSolo(*args):
@@ -1258,10 +1545,11 @@ def addXnameDlg():
     def addXnameOk(*args):
         global presetImportFlag
         
-        with open ("MemphisRider_userXnames.txt", 'w') as userXnamesFile:
+        with open ("MemphisRider_userXnames.json", 'w') as userXnamesFile:
             newXnameHashWrite = f"{int(newXnameHash.get(),16):#0{10}x}"
             userXnames[newXname.get().upper()] = str(newXnameHashWrite).upper().replace("0X","0x")
-            userXnamesFile.write(json.dumps(userXnames, indent=4))
+            userXnamesSorted = dict(sorted(userXnames.items(), key=lambda item: item[0]))
+            userXnamesFile.write(json.dumps(userXnamesSorted, indent=4))
             userXnamesFile.close
         loadUserXnames()
         if openProfilePath:
@@ -1583,5 +1871,6 @@ root.bind('<Control-Shift-e>', exportPreset)
 root.bind('<Control-Shift-E>', exportPreset)
 root.bind('<Control-Shift-i>', importPreset)
 root.bind('<Control-Shift-I>', importPreset)
+root.bind('<Configure>', fileLabelResizeCheck)
 
 root.mainloop()

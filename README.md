@@ -1,5 +1,5 @@
 # MemphisRider for NFSU2
-Originally conceived as a tool to export and import car presets between save games and Binary, MemphisRider kinda grew into a profile (save game) garage management tool; besides the aformentioned preset import/export feature, you can also export/import entire customized car slots, clear (delete) them and even sort them out. 
+Originally conceived as a tool to export and import customized player cars between save games and Binary, MemphisRider kinda grew into a profile (save game) garage management tool; besides the aformentioned preset import/export feature, you can also export/import entire your customized car slots, clear (delete) them and even sort them out.
 
 ## Additional thanks to
 * Tango Desktop Project for the UI icons
@@ -23,6 +23,7 @@ Originally conceived as a tool to export and import car presets between save gam
 * For the Python script version:
   * On Windows:
     * If you have Python 3 as your default Python instance, just double click the MemphisRider.py file
+      * If you want to run the script without a Command Prompt window popping up, you can change the file's extension to .pyw
     * Alternatively, open a Powershell/Command Prompt window in the folder you have the MemphisRider.py file and type ``py MemphisRider.py`` and press Enter
   * On Linux:
     * Make the MemphisRider.py file executable by opening a Terminal window in the folder you have the NFS_FCEPaintBooth.py file, then type ``chmod +x MemphisRider.py`` and press Enter
